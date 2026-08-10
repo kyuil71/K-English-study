@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#f4f6f9" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>English Mastery Studio</title>
+<style>
+:root{
+  --bg:#f4f6f9;--card:#ffffff;--card2:#f8fafc;--text:#172033;--muted:#6b7485;--line:#dfe4ea;
+  --accent:#275efe;--accent2:#eef3ff;--good:#137a45;--goodbg:#eaf8f0;--bad:#b42318;--badbg:#fff0ef;
+  --warn:#9a6700;--warnbg:#fff7df;--shadow:0 10px 30px rgba(20,32,55,.07)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",Arial,sans-serif;line-height:1.5}
+button,input,textarea,select{font:inherit}
+header{position:sticky;top:0;z-index:30;background:rgba(244,246,249,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1180px;margin:auto;padding:16px 20px}
+.brand{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.brand h1{font-size:23px;line-height:1.2;margin:0;letter-spacing:-.3px}
+.brand small{display:block;color:var(--muted);margin-top:4px}
+.logo{display:flex;align-items:center;gap:11px}
+.studyRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}.studyRow+.studyRow{border-top:1px solid var(--line);margin-top:13px;padding-top:13px}.studyRowMain{min-width:0}.rowLabel{font-size:10px;font-weight:850;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}.linkedSentence{font-size:13px;font-weight:700;line-height:1.55}.studyRowActions{display:flex;gap:6px;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap}.studyRowActions .state{justify-content:flex-end}@media(max-width:680px){.studyRow{grid-template-columns:1fr}.studyRowActions,.studyRowActions .state{justify-content:flex-start}}
+nav{display:flex;gap:7px;overflow-x:auto;padding-top:13px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--text);padding:9px 13px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+main{max-width:1180px;margin:auto;padding:20px 20px 80px}.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.hero{padding:23px}.hero h2{margin:0 0 7px;font-size:28px;letter-spacing:-.5px}.hero p{margin:0;color:var(--muted)}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr}}
+@media(max-width:680px){.g2,.g4{grid-template-columns:1fr}.brand{align-items:flex-start}.brand small{max-width:250px}.wrap,main{padding-left:13px;padding-right:13px}.hero h2{font-size:24px}}
+.stat{font-size:29px;font-weight:850;letter-spacing:-.5px}.statlabel{font-size:12px;color:var(--muted);margin-top:2px}.statSub{font-size:11px;color:var(--muted);margin-top:8px}
+label{display:block;font-size:12px;font-weight:800;margin:0 0 6px;color:#384255}
+.input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;color:var(--text);outline:none}
+.input:focus,textarea:focus,select:focus{border-color:#9bb4ff;box-shadow:0 0 0 3px rgba(39,94,254,.09)}
+textarea{min-height:310px;resize:vertical;line-height:1.55}
+.btn{border:0;border-radius:11px;padding:10px 13px;background:var(--text);color:#fff;cursor:pointer;font-weight:800;font-size:13px}.btn:hover{filter:brightness(.97)}
+.btn.primary{background:var(--accent)}.btn.secondary{background:#fff;color:var(--text);border:1px solid var(--line)}.btn.green{background:var(--good)}.btn.danger{background:var(--bad)}.btn.tiny{padding:6px 9px;font-size:11px;border-radius:9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.muted{color:var(--muted)}.small{font-size:12px}.tinyText{font-size:11px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}.section-title h3{margin:0;font-size:17px}.section-title h4{margin:0;font-size:15px}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;background:#fff}.pill.blue{background:var(--accent2);border-color:#cfdbff;color:#2049c8}.pill.green{background:var(--goodbg);border-color:#bde4cd;color:var(--good)}.pill.red{background:var(--badbg);border-color:#f4c5c1;color:var(--bad)}.pill.yellow{background:var(--warnbg);border-color:#eedb9c;color:var(--warn)}
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filterbar .search{flex:1;min-width:210px}.filterbar select{width:auto;min-width:150px}.filterbar .date{width:150px}
+@media(max-width:680px){.filterbar>*{width:100%!important;min-width:0!important}}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.itemMain{min-width:0}.itemTitle{font-weight:800;font-size:15px;word-break:break-word}.itemSub{color:var(--muted);font-size:12px;margin-top:5px;white-space:pre-wrap}.itemMeta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.state{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:680px){.item{grid-template-columns:1fr}.state{justify-content:flex-start}}
+.stateBtn{font-size:11px;padding:7px 9px;border-radius:9px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:800}.stateBtn.known.active{background:var(--goodbg);color:var(--good);border-color:#a8dabb}.stateBtn.unknown.active{background:var(--badbg);color:var(--bad);border-color:#efb8b2}
+.noteBox{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin:8px 0;color:#4f5b6e;font-size:12px;white-space:pre-wrap}.noteLabel{font-weight:800;color:#39455a;margin-bottom:4px}
+.flow{display:flex;flex-direction:column;gap:0}.flowBlock{padding:12px 0;border-bottom:1px solid var(--line)}.flowBlock:last-child{border-bottom:0}.flowNote{font-size:12px;color:#536075;line-height:1.65}.flowWrong{background:#fff7f6;border:1px solid #f0d5d2;border-radius:11px;padding:10px 12px;margin:5px 0}.flowWrongLabel{font-size:10px;font-weight:850;color:var(--bad);margin-bottom:3px}.flowItem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:13px;align-items:start}.flowItemText{font-weight:800;font-size:15px;line-height:1.6}.flowTranslation{color:var(--muted);font-size:12px;margin-top:5px}.flowActions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}@media(max-width:680px){.flowItem{grid-template-columns:1fr}.flowActions{justify-content:flex-start}}
+.chapter{border-left:4px solid #cfd7e7;box-shadow:none}.chapter.words{border-left-color:var(--accent)}.chapter.sentences{border-left-color:#7b61d1}.chapter.notes{border-left-color:#9ba4b2}
+.tag{font-size:10px;padding:3px 6px;border-radius:999px;background:#eef1f5;color:#536074;display:inline-flex;align-items:center}.tag.core{background:var(--accent2);color:#254fcf}.tag.due{background:var(--badbg);color:var(--bad)}
+.date-list{display:grid;gap:9px}.date-card{padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;cursor:pointer}.date-card:hover{border-color:#b7c1cf}
+.empty{text-align:center;color:var(--muted);padding:30px 15px}.notice{background:#eef4ff;border:1px solid #cfddff;border-radius:14px;padding:13px 15px;font-size:12px;color:#3d4c68}.warnNotice{background:#fff7e6;border-color:#f0d49b;color:#6f571d}
+.segmented{display:flex;gap:6px;flex-wrap:wrap}.seg{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.seg.active{background:var(--text);color:#fff;border-color:var(--text)}
+.wordGrid,.sentenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}@media(max-width:760px){.wordGrid,.sentenceGrid{grid-template-columns:1fr}}
+.studyCard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 5px 18px rgba(20,32,55,.04)}.studyCard .topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.studyCard .term{font-size:19px;font-weight:850;line-height:1.25}.studyCard .meaning{font-size:13px;color:#344057;margin-top:8px}.studyCard .example{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.reviewShell{max-width:780px;margin:0 auto}.reviewCard{padding:22px}.progress{height:7px;background:#e9edf2;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--accent);width:0}.reviewMeta{margin-top:10px;color:var(--muted);font-size:11px}.reviewPromptLabel{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:850;margin-top:22px}.reviewQ{font-size:26px;font-weight:850;line-height:1.3;margin:8px 0 15px;word-break:break-word}.reviewAnswer{display:none;margin-top:14px;border-radius:14px;background:var(--card2);border:1px solid var(--line);padding:15px;white-space:pre-wrap}.reviewAnswer.show{display:block}.reviewAnswer .big{font-size:22px;font-weight:850;margin-bottom:7px}.reviewActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.reviewActions .btn{flex:1;min-width:130px}.shortcut{font-size:10px;color:var(--muted);margin-top:10px}.kbd{font-family:ui-monospace,monospace;font-size:10px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 4px;background:#fff}
+.dueRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.dueRow:last-child{border-bottom:0}.dueMain{min-width:0}.dueTitle{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dueSub{font-size:11px;color:var(--muted);margin-top:3px}
+.divider{height:1px;background:var(--line);margin:14px 0}.right{margin-left:auto}
+.hidden{display:none!important}
+
+
+/* Firebase cloud account */
+.brandStatus{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.cloudAccount{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:var(--card2);margin:12px 0}
+.cloudAccountText{min-width:0;flex:1}.cloudAccountName{font-weight:850;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cloudAccountEmail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.cloudStatusBox{border:1px solid var(--line);background:var(--card2);border-radius:13px;padding:12px 13px;font-size:12px;color:#4b586d;white-space:pre-wrap;word-break:break-word;margin-top:12px}
+.cloudStatusBox.ok{background:var(--goodbg);border-color:#bde4cd;color:#17613c}.cloudStatusBox.error{background:var(--badbg);border-color:#efc6c2;color:#8a2118}.cloudStatusBox.busy{background:var(--accent2);border-color:#cfdbff;color:#274dbb}
+.cloudGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.cloudActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.switchRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}.switchRow input{width:20px;height:20px;accent-color:var(--accent)}
+details.setupHelp{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}details.setupHelp summary{cursor:pointer;font-weight:800;font-size:12px;color:#46536a}details.setupHelp pre{margin:10px 0 0;background:#101827;color:#e6edf7;border-radius:11px;padding:12px;overflow:auto;font-size:10px;line-height:1.55;white-space:pre-wrap}
+.mobileLabel{display:none}
+
+/* Smartphone app layout */
+@media(max-width:680px){
+  :root{--mobile-nav-h:66px}
+  html,body{min-height:100%;overscroll-behavior-y:none}
+  body{font-size:15px;padding-bottom:0}
+  header{position:sticky;top:0;background:rgba(244,246,249,.96);backdrop-filter:blur(18px)}
+  .wrap{padding:10px 12px}.brand{align-items:center;gap:8px}.brand h1{font-size:18px;letter-spacing:-.35px}.brand small{display:none}.brandStatus{gap:4px}.brandStatus .pill{font-size:9px;padding:4px 6px}
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:80;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:6px 5px calc(6px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid var(--line);box-shadow:0 -8px 25px rgba(20,32,55,.08);overflow:visible}
+  .tab{min-width:0;min-height:44px;padding:7px 2px;border:0;border-radius:10px;background:transparent;font-size:10px;line-height:1.15;white-space:normal;color:#5b6678}
+  .tab.active{background:var(--accent2);color:var(--accent);border:0}.desktopLabel{display:none}.mobileLabel{display:inline}
+  main{padding:11px 10px calc(18px + var(--mobile-nav-h) + env(safe-area-inset-bottom));max-width:none}
+  .card{border-radius:15px;padding:14px;margin-bottom:10px;box-shadow:0 3px 12px rgba(20,32,55,.035)}.hero{padding:16px}.hero h2{font-size:21px;line-height:1.28}.hero p{font-size:13px}
+  .grid{gap:9px}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2,.g3{grid-template-columns:1fr}.stat{font-size:25px}.statlabel{font-size:11px}.statSub{font-size:10px}
+  .section-title{align-items:flex-start;gap:8px}.section-title h3{font-size:16px}.section-title .btn{flex:0 0 auto}
+  .btn{min-height:44px;padding:10px 12px;border-radius:11px;font-size:13px;touch-action:manipulation}.btn.tiny{min-height:36px;padding:7px 9px;font-size:11px}.stateBtn{min-height:38px;padding:8px 10px;touch-action:manipulation}
+  .input,textarea,select{font-size:16px;border-radius:11px;padding:11px 12px}textarea{min-height:46svh;resize:vertical}
+  .filterbar{gap:7px}.filterbar>*{width:100%!important;min-width:0!important}.filterbar .btn{width:100%}.actions{gap:7px}.actions>.btn{flex:1 1 130px}
+  .wordGrid,.sentenceGrid{display:block}.studyCard{margin-bottom:9px;padding:14px;border-radius:14px}.studyCard .term{font-size:18px}.studyRow{grid-template-columns:1fr;gap:10px}.studyRowActions,.studyRowActions .state{justify-content:flex-start}.studyRowActions .stateBtn{flex:1 1 86px}
+  .item{grid-template-columns:1fr;gap:10px}.state{justify-content:flex-start}.state .stateBtn{flex:1 1 86px}
+  .flowItem{grid-template-columns:1fr;gap:9px}.flowActions{justify-content:flex-start}.flowActions .stateBtn{flex:1 1 86px}
+  .reviewShell{max-width:none}.reviewCard{min-height:calc(100svh - 155px - var(--mobile-nav-h));padding:17px;display:flex;flex-direction:column}.reviewQ{font-size:24px;line-height:1.35}.reviewActions{margin-top:auto;padding-top:16px}.reviewActions .btn{min-width:0;flex:1 1 30%}.shortcut{display:none}
+  .dueRow{align-items:flex-start}.dueRow>.btn{min-width:72px}.date-card{padding:12px}
+  .cloudGrid{grid-template-columns:1fr}.cloudActions{grid-template-columns:1fr 1fr}.cloudAccount{padding:10px}.cloudStatusBox{font-size:11px}
+}
+@media(max-width:390px){
+  .wrap{padding-left:9px;padding-right:9px}.brand h1{font-size:17px}.brandStatus #saveStatus{display:none}
+  main{padding-left:8px;padding-right:8px}.tab{font-size:9px;padding-left:1px;padding-right:1px}.card{padding:12px}.hero h2{font-size:19px}.cloudActions{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"><div><h1>English Mastery Studio</h1><small>단어 · 영어 문장 · 집중 복습 · 날짜별 학습 기록</small></div></div>
+      <div class="brandStatus"><span class="pill green" id="saveStatus">로컬 저장</span><span class="pill" id="cloudHeaderStatus">클라우드 로그아웃</span></div>
+    </div>
+    <nav id="tabs">
+      <button class="tab active" data-tab="dashboard"><span class="desktopLabel">대시보드</span><span class="mobileLabel">홈</span></button>
+      <button class="tab" data-tab="add"><span class="desktopLabel">오늘 학습 입력</span><span class="mobileLabel">입력</span></button>
+      <button class="tab" data-tab="words"><span class="desktopLabel">단어장</span><span class="mobileLabel">단어</span></button>
+      <button class="tab" data-tab="sentences"><span class="desktopLabel">문장장</span><span class="mobileLabel">문장</span></button>
+      <button class="tab" data-tab="review"><span class="desktopLabel">집중 복습</span><span class="mobileLabel">복습</span></button>
+      <button class="tab" data-tab="archive"><span class="desktopLabel">학습 기록</span><span class="mobileLabel">기록</span></button>
+      <button class="tab" data-tab="backup"><span class="desktopLabel">데이터</span><span class="mobileLabel">데이터</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section id="dashboard" class="panel active">
+  <div class="card hero">
+    <h2>외운 것은 간격을 늘리고, 못 외운 것은 다시 만납니다.</h2>
+    <p>한글 설명은 학습 노트로만 보존하고, <b>영어 단어와 영어 문장만</b> 암기 체크 대상으로 관리합니다.</p>
+  </div>
+  <div class="grid g4">
+    <div class="card"><div class="stat" id="statDays">0</div><div class="statlabel">학습한 날짜</div><div class="statSub">날짜별 원문과 챕터 보존</div></div>
+    <div class="card"><div class="stat" id="statWords">0</div><div class="statlabel">등록 단어</div><div class="statSub" id="statCoreWords">핵심 단어 0</div></div>
+    <div class="card"><div class="stat" id="statSentences">0</div><div class="statlabel">영어 문장</div><div class="statSub">한글 문장은 체크 제외</div></div>
+    <div class="card"><div class="stat" id="statDue">0</div><div class="statlabel">오늘 복습 필요</div><div class="statSub">미암기 + 복습 예정 항목</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="section-title"><h3>오늘의 복습 큐</h3><button class="btn primary" onclick="startReview('due','all')">지금 복습</button></div>
+      <div id="dueList"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>암기 현황</h3></div>
+      <div id="masterySummary"></div>
+    </div>
+  </div>
+  <div class="card"><div class="section-title"><h3>최근 학습</h3></div><div id="recentList" class="date-list"></div></div>
+</section>
+
+<section id="add" class="panel">
+  <div class="card">
+    <div class="grid g2">
+      <div><label>학습 날짜</label><input id="studyDate" class="input" type="date"></div>
+      <div><label>학습 제목</label><input id="studyTitle" class="input" value="오늘의 영어 연습" placeholder="예: Managing a Project Delay"></div>
+    </div>
+    <div style="margin-top:14px">
+      <label>오늘의 학습 내용</label>
+      <textarea id="rawInput" placeholder="ChatGPT에서 받은 영어 학습 내용을 그대로 붙여넣으세요.\n\n핵심 단어, 예문, 원어민 표현, 한국어 설명, 말하기 연습이 함께 있어도 됩니다."></textarea>
+      <div class="small muted" style="margin-top:6px">자동 분석 시 한글은 챕터 노트로 저장되고, 암기 체크는 핵심 단어와 영어 문장에만 생성됩니다.</div>
+    </div>
+    <div class="actions" style="margin-top:14px"><button class="btn primary" onclick="parseAndSave()">분석해서 저장</button><button class="btn secondary" onclick="loadSample()">프로젝트 지연 예시</button></div>
+  </div>
+  <div class="notice"><b>자동 분류:</b> 핵심 단어 / 단어 예문 / 원어민 표현 / 표현 교정 / 말하기 연습 / 기타 영어 문장. 틀린 영어 예시는 암기 대상이 아니라 비교 노트로만 저장합니다. Markdown 기호와 장식용 아이콘은 학습 화면에 표시하지 않습니다.</div>
+</section>
+
+<section id="words" class="panel">
+  <div class="card">
+    <div class="section-title"><div><h3>Vocabulary</h3><div class="small muted">주어진 핵심 단어를 별도로 추적하고 반복 복습합니다.</div></div><button class="btn primary" onclick="startReview('due','coreword')">핵심 단어 복습</button></div>
+    <div class="filterbar">
+      <input id="wordSearch" class="input search" placeholder="단어·뜻·예문 검색" oninput="renderWords()">
+      <select id="wordKind" onchange="renderWords()"><option value="all">모든 단어</option><option value="core">핵심 단어만</option><option value="linked">연결/복습 단어</option></select>
+      <select id="wordState" onchange="renderWords()"><option value="all">모든 상태</option><option value="unknown">못 외움</option><option value="known">외움</option><option value="new">미체크</option><option value="due">오늘 복습</option></select>
+    </div>
+  </div>
+  <div id="wordList" class="wordGrid"></div>
+</section>
+
+<section id="sentences" class="panel">
+  <div class="card">
+    <div class="section-title"><div><h3>English Sentences</h3><div class="small muted">한국어 문장은 표시만 하고, 체크 대상에는 포함하지 않습니다.</div></div><button class="btn primary" onclick="startReview('due','sentence')">문장 복습</button></div>
+    <div class="filterbar">
+      <input id="sentenceSearch" class="input search" placeholder="영어 문장·번역·챕터 검색" oninput="renderSentences()">
+      <select id="sentenceKind" onchange="renderSentences()"><option value="all">모든 문장</option><option value="vocab-example">단어 연계 문장</option><option value="native">원어민 표현</option><option value="correction">표현 교정</option><option value="speaking">말하기 연습</option><option value="general">기타 문장</option></select>
+      <select id="sentenceState" onchange="renderSentences()"><option value="all">모든 상태</option><option value="unknown">못 외움</option><option value="known">외움</option><option value="new">미체크</option><option value="due">오늘 복습</option></select>
+    </div>
+  </div>
+  <div id="sentenceList" class="sentenceGrid"></div>
+</section>
+
+<section id="review" class="panel">
+  <div class="card">
+    <div class="section-title"><div><h3>Focused Review</h3><div class="small muted">못 외운 항목은 같은 세트의 뒤쪽에 한 번 더 자동 배치됩니다.</div></div></div>
+    <div class="filterbar">
+      <select id="reviewScope"><option value="due">오늘 복습 필요</option><option value="unknown">못 외운 것만</option><option value="new">미체크만</option><option value="all">전체</option></select>
+      <select id="reviewType"><option value="all">단어 + 문장</option><option value="coreword">핵심 단어만</option><option value="word">모든 단어</option><option value="sentence">영어 문장만</option></select>
+      <select id="reviewDirection"><option value="auto">자동 방향</option><option value="recognition">영어 → 뜻/설명</option><option value="recall">뜻/힌트 → 영어</option></select>
+      <input id="reviewFrom" class="input date" type="date" title="시작 날짜">
+      <input id="reviewTo" class="input date" type="date" title="종료 날짜">
+      <button class="btn primary" onclick="startReview()">복습 세트 만들기</button>
+    </div>
+  </div>
+  <div id="reviewArea" class="reviewShell"></div>
+</section>
+
+<section id="archive" class="panel">
+  <div class="card">
+    <div class="filterbar">
+      <input id="archiveSearch" class="input search" placeholder="날짜·제목·단어·문장·노트 검색" oninput="renderArchive()">
+      <select id="archiveType" onchange="renderArchive()"><option value="all">전체</option><option value="word">단어</option><option value="sentence">영어 문장</option><option value="notes">학습 노트</option></select>
+      <select id="archiveState" onchange="renderArchive()"><option value="all">모든 상태</option><option value="unknown">못 외움</option><option value="known">외움</option><option value="new">미체크</option></select>
+    </div>
+  </div>
+  <div id="archiveList"></div>
+</section>
+
+<section id="backup" class="panel">
+  <div class="card">
+    <div class="section-title"><div><h3>Google 계정 · Firebase 클라우드</h3><div class="small muted">Google 로그인 후 현재 학습 데이터를 Firebase에 JSON 백업 파일로 저장하고 다시 불러올 수 있습니다.</div></div><span class="pill" id="cloudAuthPill">로그아웃</span></div>
+    <div id="fileProtocolNotice" class="notice warnNotice hidden">구글 로그인은 file:// 로 직접 연 HTML에서는 정상 동작하지 않을 수 있습니다. HTTPS 주소(Firebase Hosting, GitHub Pages 등)에 올린 뒤 Firebase Authentication의 승인된 도메인에 해당 도메인을 추가해 주세요.</div>
+    <div class="cloudGrid">
+      <div>
+        <div class="cloudAccount">
+          <div class="cloudAccountText"><div class="cloudAccountName" id="cloudUserName">Google 로그인이 필요합니다</div><div class="cloudAccountEmail" id="cloudUserEmail">로그인하면 기기 간 학습 데이터를 동기화할 수 있습니다.</div></div>
+        </div>
+        <div class="switchRow"><div><b class="small">로컬 변경 자동 클라우드 저장</b><div class="tinyText muted">로그인 상태에서 단어·문장 체크나 학습 저장 후 자동 백업합니다.</div></div><input id="cloudAutoSync" type="checkbox" checked onchange="setCloudAutoSync(this.checked)"></div>
+      </div>
+      <div class="cloudActions">
+        <button class="btn primary" id="cloudLoginBtn" onclick="firebaseLogin()">Google 로그인</button>
+        <button class="btn secondary hidden" id="cloudLogoutBtn" onclick="firebaseLogout()">로그아웃</button>
+        <button class="btn green" id="cloudSaveBtn" onclick="firebaseSaveCloud()" disabled>클라우드에 저장</button>
+        <button class="btn secondary" id="cloudLoadBtn" onclick="firebaseLoadCloud()" disabled>클라우드에서 불러오기</button>
+      </div>
+    </div>
+    <div id="cloudStatusBox" class="cloudStatusBox">현재 상태: Google 로그인 대기 중</div>
+    <details class="setupHelp">
+      <summary>Firebase에서 처음 한 번 확인할 설정</summary>
+      <div class="small muted" style="margin-top:9px">Authentication에서 Google 공급자를 활성화하고, 앱을 올릴 HTTPS 도메인을 승인된 도메인에 추가하세요. 아래 규칙처럼 사용자 UID 경로를 본인만 읽고 쓰게 제한하는 것을 권장합니다.</div>
+      <pre>Cloud Storage Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+  }
+}
+
+Cloud Firestore Rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+  }
+}</pre>
+    </details>
+  </div>
+
+  <div class="grid g2">
+    <div class="card"><h3>JSON 파일 백업</h3><p class="muted small">모든 날짜, 챕터, 단어/문장 암기 상태, 복습 이력을 기기에 JSON 파일로 저장합니다.</p><button class="btn primary" onclick="exportJSON()">JSON 저장</button></div>
+    <div class="card"><h3>JSON 파일 복원</h3><p class="muted small">파일 선택창에는 <b>.json 확장자 파일만</b> 표시됩니다.</p><input id="importFile" type="file" accept=".json" class="input" onchange="validateJSONFile(this)"><div class="actions" style="margin-top:10px"><button class="btn" onclick="importJSON()">JSON 불러오기</button></div></div>
+  </div>
+  <div class="card"><h3>저장 방식</h3><p class="muted small">학습 데이터는 먼저 브라우저 localStorage에 즉시 저장됩니다. Google 로그인 상태에서는 같은 JSON 백업을 Firebase Cloud Storage의 사용자 전용 경로에 저장하고, Firestore에는 마지막 동기화 시각과 학습 항목 수만 기록합니다.</p><div class="actions"><button class="btn danger" onclick="clearAll()">모든 로컬 데이터 삭제</button></div></div>
+</section>
+</main>
+
+<script>
+const KEY='dailyEnglishReviewLab_v1';
+let reviewQueue=[];
+let reviewIndex=0;
+let reviewRepeatCount={};
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function today(){return localDate(new Date())}
+function addDays(dateStr,days){const [y,m,d]=dateStr.split('-').map(Number);const x=new Date(y,m-1,d);x.setDate(x.getDate()+days);return localDate(x)}
+function hasHangul(s=''){return /[가-힣]/.test(String(s))}
+function stripMarkdown(s=''){
+  return String(s)
+    .replace(/^\s*#{1,6}\s*/,'')
+    .replace(/^\s*>\s*/,'')
+    .replace(/\*\*([^*]+)\*\*/g,'$1')
+    .replace(/__([^_]+)__/g,'$1')
+    .replace(/`([^`]+)`/g,'$1')
+    .replace(/\*+/g,'')
+    .replace(/_{2,}/g,'')
+    .replace(/^\s*[-*+]\s+(?=\S)/,'')
+    .trim();
+}
+function stripDecorativeIcons(s=''){
+  return String(s).replace(/[\uFE0F\u200D]/g,'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'');
+}
+function cleanUserText(s=''){return stripDecorativeIcons(stripMarkdown(String(s))).replace(/\s+/g,' ').trim()}
+function cleanMarker(s=''){return cleanUserText(String(s).replace(/^\s*>\s*/,''))}
+function cleanEnglishMarker(s=''){
+  return cleanUserText(String(s)
+    .replace(/^\s*(?:❌|✗|✕|×|X)\s+/i,'')
+    .replace(/^\s*(?:✅|✓|✔|→|->)\s*/,'')
+  );
+}
+function isWrongLine(s=''){
+  const x=stripMarkdown(String(s).replace(/^\s*>\s*/,''));
+  return /^\s*(?:❌|✗|✕|×|X)\s+/i.test(x);
+}
+function isCorrectMarkerLine(s=''){
+  const x=stripMarkdown(String(s).replace(/^\s*>\s*/,''));
+  return /^\s*(?:✅|✓|✔|→|->)\s*/.test(x);
+}
+function isEnglishSentence(s=''){
+  const x=cleanEnglishMarker(s);
+  if(!x||hasHangul(x)||!/[A-Za-z]/.test(x))return false;
+  const words=x.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[];
+  if(words.length<3)return false;
+  return /[.!?…]$/.test(x)||x.includes('...')||/^(I|We|You|He|She|They|The|A|An|This|That|There|It|Our|My|Your|Because|After|Before|When|If|To|User|We're|We've|We'll|I'm|I've|I'll|It's|Let's)\b/i.test(x);
+}
+function looksLikeVocabTerm(s=''){
+  const x=cleanUserText(s);
+  return /^[A-Za-z][A-Za-z' -]{0,60}$/.test(x)&&x.split(/\s+/).length<=4&&!/[.!?]$/.test(x);
+}
+function defaultReviewMeta(item){
+  item.state=item.state||'new'; item.reviewCount=Number(item.reviewCount||0); item.correctCount=Number(item.correctCount||0); item.streak=Number(item.streak||0); item.lastReviewed=item.lastReviewed||null; item.nextReview=item.nextReview||null; return item;
+}
+function normalizeItem(old,chapterTitle=''){
+  if(!old)return null;
+  if(old.type==='word'){
+    let meaning=cleanUserText(old.meaning||''),example=cleanEnglishMarker(old.example||'');
+    if(!meaning&&old.back){const parts=String(old.back).split('\n');meaning=cleanUserText(parts.shift()||'');example=cleanEnglishMarker(parts.join(' ').trim())}
+    const front=cleanUserText(old.front||old.term||'');
+    if(!looksLikeVocabTerm(front))return null;
+    return defaultReviewMeta({...old,type:'word',front,meaning,example,subtype:old.subtype||(/핵심 단어/.test(chapterTitle)?'core':'linked')});
+  }
+  let front=cleanEnglishMarker(old.front||'');
+  if(!isEnglishSentence(front)||isWrongLine(old.front||''))return null;
+  return defaultReviewMeta({...old,type:'sentence',front,translation:cleanUserText(old.translation||''),note:cleanUserText(old.note||old.back||''),contrast:cleanEnglishMarker(old.contrast||''),subtype:old.subtype||(old.type==='practice'?'speaking':'general')});
+}
+function reviewKey(i){return `${i.type}|${cleanUserText(i.front||'').toLowerCase()}`}
+function copyReviewState(target,source){
+  if(!source)return target;
+  target.id=source.id||target.id;target.state=source.state||target.state;target.reviewCount=Number(source.reviewCount||0);target.correctCount=Number(source.correctCount||0);target.streak=Number(source.streak||0);target.lastReviewed=source.lastReviewed||null;target.nextReview=source.nextReview||null;return target;
+}
+function ensureLinkedExamples(chapters){
+  for(const c of chapters){
+    const sentenceItems=c.items.filter(i=>i.type==='sentence');
+    for(const w of c.items.filter(i=>i.type==='word'&&i.example&&isEnglishSentence(i.example))){
+      const exists=sentenceItems.some(si=>si.subtype==='vocab-example'&&cleanEnglishMarker(si.front).toLowerCase()===cleanEnglishMarker(w.example).toLowerCase());
+      if(!exists){const si=defaultReviewMeta({id:uid(),type:'sentence',subtype:'vocab-example',front:cleanEnglishMarker(w.example),translation:'',note:'',linkedWord:w.front,linkedWordId:w.id,createdAt:w.createdAt||Date.now()});c.items.push(si);sentenceItems.push(si)}
+    }
+  }
+  return chapters;
+}
+function repairLinkedIds(chapters){
+  for(const c of chapters){const wordIds=new Map(c.items.filter(i=>i.type==='word').map(w=>[cleanUserText(w.front).toLowerCase(),w.id]));for(const si of c.items.filter(i=>i.type==='sentence'&&i.subtype==='vocab-example'&&i.linkedWord)){const id=wordIds.get(cleanUserText(si.linkedWord).toLowerCase());if(id)si.linkedWordId=id}}
+  return chapters;
+}
+function normalizedOldChapters(s){
+  const out=[];
+  for(const c of s.chapters||[]){
+    const nc={title:cleanUserText(c.title||'기타'),kind:c.kind||'mixed',notes:(Array.isArray(c.notes)?c.notes:[]).map(cleanUserText).filter(Boolean),items:[],flow:[]};
+    for(const old of c.items||[]){const ni=normalizeItem(old,c.title||'');if(ni)nc.items.push(ni)}
+    out.push(nc);
+  }
+  return ensureLinkedExamples(out);
+}
+function migrateDB(source){
+  const out={version:4,sessions:[]};
+  for(const s of (source&&source.sessions)||[]){
+    const oldChapters=normalizedOldChapters(s);const oldMap=new Map();
+    for(const i of oldChapters.flatMap(c=>c.items))oldMap.set(reviewKey(i),i);
+    let chapters;
+    if(s.raw){
+      chapters=parseContent(s.raw);
+      for(const i of chapters.flatMap(c=>c.items))copyReviewState(i,oldMap.get(reviewKey(i)));
+    }else chapters=oldChapters;
+    out.sessions.push({...s,title:cleanUserText(s.title||'오늘의 영어 연습'),chapters:repairLinkedIds(ensureLinkedExamples(chapters))});
+  }
+  out.sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  return out;
+}
+function loadDB(){try{const raw=localStorage.getItem(KEY);return migrateDB(raw?JSON.parse(raw):{sessions:[]})}catch(e){return{version:4,sessions:[]}}}
+let db=loadDB();
+function saveDB(){db.version=4;localStorage.setItem(KEY,JSON.stringify(db));const s=document.getElementById('saveStatus');if(s){s.textContent='로컬 저장';s.className='pill green'}renderAll();if(!window.__cloudApplying&&typeof window.cloudSyncSchedule==='function')window.cloudSyncSchedule()}
+
+document.getElementById('studyDate').value=today();
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+function switchTab(name){document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));const tab=document.querySelector(`.tab[data-tab="${name}"]`);if(tab)tab.classList.add('active');const panel=document.getElementById(name);if(panel)panel.classList.add('active');if(name==='words')renderWords();if(name==='sentences')renderSentences();if(name==='archive')renderArchive();if(name==='dashboard')renderDashboard()}
+
+function normalizeLines(text){return String(text).replace(/\r/g,'').split('\n').map(x=>x.trim())}
+function makeChapter(title,kind='mixed'){return{title:cleanUserText(title),kind,notes:[],items:[],flow:[]}}
+function headingFor(line){
+  const x=cleanUserText(line);
+  const pairs=[
+    [/^핵심 단어(?:\s*\d+개)?$/i,['핵심 단어','words']],
+    [/원어민.*표현/i,['원어민 표현','sentences']],
+    [/한국어식.*표현|자연스럽게 바꾸기|표현 교정/i,['표현 교정','sentences']],
+    [/오늘의 말하기 연습|말하기 연습/i,['말하기 연습','sentences']],
+    [/^(예문|example sentences?)/i,['예문','sentences']]
+  ];
+  for(const [re,val] of pairs)if(re.test(x))return val;
+  return null;
+}
+function isMarkdownTableSeparator(line=''){
+  const x=String(line).trim();
+  if(!x.includes('-'))return false;
+  const y=x.replace(/[|:\-\s]/g,'');
+  return y==='';
+}
+function parseWordRow(line){
+  let cols=[];const raw=String(line).trim();
+  if(isMarkdownTableSeparator(raw))return null;
+  if(raw.includes('|'))cols=raw.replace(/^\s*\|/,'').replace(/\|\s*$/,'').split('|').map(x=>cleanUserText(x));
+  else cols=raw.split(/\t|\s{2,}/).map(x=>cleanUserText(x)).filter(Boolean);
+  if(cols.length<2)return null;
+  const term=cleanUserText(cols[0]),meaning=cleanUserText(cols[1]);
+  if(/^(word|단어)$/i.test(term)||/^(뜻|meaning)$/i.test(meaning))return null;
+  if(looksLikeVocabTerm(term)&&hasHangul(meaning)){
+    const example=cleanEnglishMarker(cols.slice(2).join(' ').trim());
+    return{term,meaning,example:isEnglishSentence(example)?example:''};
+  }
+  return null;
+}
+function parseArrowWordSequence(line){
+  const x=cleanUserText(line);const m=x.match(/([A-Za-z][A-Za-z' -]*(?:\s*→\s*[A-Za-z][A-Za-z' -]*){1,})/);
+  if(!m)return[];
+  return m[1].split(/\s*→\s*/).map(x=>cleanUserText(x)).filter(looksLikeVocabTerm);
+}
+function splitEnglishSentences(line){
+  const x=cleanEnglishMarker(line);
+  if(!x||hasHangul(x))return[];
+  const parts=x.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g)||[x];
+  return parts.map(v=>cleanEnglishMarker(v)).filter(isEnglishSentence);
+}
+function sentenceSubtype(chapterTitle){
+  if(chapterTitle==='원어민 표현')return'native';
+  if(chapterTitle==='표현 교정')return'correction';
+  if(chapterTitle==='말하기 연습')return'speaking';
+  if(chapterTitle==='핵심 단어'||chapterTitle==='연결 단어')return'vocab-example';
+  return'general';
+}
+function parseContent(text){
+  const lines=normalizeLines(text); const chapters=[]; let current=makeChapter('학습 개요','notes'); let pendingWrong=''; let pendingWrongDirect=false; let lastSentence=null;
+  const pushCurrent=()=>{if(current&&(current.items.length||current.notes.length||current.flow.length)){chapters.push(current)}current=null};
+  const ensureCurrent=()=>{if(!current)current=makeChapter('기타','mixed')};
+  const addFlow=(type,payload={})=>{ensureCurrent();current.flow.push({type,...payload})};
+  const addNote=(text,flow=true)=>{ensureCurrent();const t=cleanUserText(text);if(!t)return;current.notes.push(t);if(flow)addFlow('note',{text:t})};
+  const addSentence=(sentence,subtype,extra={})=>{ensureCurrent();const front=cleanEnglishMarker(sentence);if(!isEnglishSentence(front))return null;const item=defaultReviewMeta({id:uid(),type:'sentence',subtype,front,translation:'',note:'',createdAt:Date.now(),...extra});current.items.push(item);addFlow('item',{key:reviewKey(item)});lastSentence=item;return item};
+  const addWord=(payload)=>{ensureCurrent();const item=defaultReviewMeta({id:uid(),type:'word',createdAt:Date.now(),...payload});current.items.push(item);addFlow('item',{key:reviewKey(item)});return item};
+  for(let i=0;i<lines.length;i++){
+    const rawLine=lines[i]; if(!rawLine)continue;
+    const h=headingFor(rawLine); if(h){pushCurrent();current=makeChapter(h[0],h[1]);pendingWrong='';pendingWrongDirect=false;lastSentence=null;continue}
+    ensureCurrent();
+    if(isMarkdownTableSeparator(rawLine))continue;
+    const plain=cleanUserText(rawLine);
+    if(!plain)continue;
+    if((/\bWord\b/i.test(plain)&&/(뜻|Meaning)/i.test(plain)&&/(Example|예문)/i.test(plain))||(/^단어\b/i.test(plain)&&/(뜻|예문)/i.test(plain)))continue;
+    const row=parseWordRow(rawLine);
+    if(row){
+      const subtype=current.title==='핵심 단어'?'core':'linked';
+      const w=addWord({subtype,front:row.term,meaning:row.meaning,example:row.example});
+      if(row.example)addSentence(row.example,'vocab-example',{linkedWord:row.term,linkedWordId:w.id});
+      pendingWrong='';pendingWrongDirect=false;
+      continue;
+    }
+    const seq=parseArrowWordSequence(rawLine);
+    if(seq.length>=2){
+      for(const term of seq)addWord({subtype:'linked',front:term,meaning:'',example:''});
+      if(hasHangul(plain))addNote(plain);
+      pendingWrong='';pendingWrongDirect=false;
+      continue;
+    }
+    if(isWrongLine(rawLine)&&isEnglishSentence(rawLine)){
+      pendingWrong=cleanEnglishMarker(rawLine);pendingWrongDirect=true;lastSentence=null;
+      addFlow('wrong',{text:pendingWrong});
+      continue;
+    }
+    if(isCorrectMarkerLine(rawLine)){
+      const cleaned=cleanEnglishMarker(rawLine);
+      if(hasHangul(cleaned)){
+        if(current.title==='원어민 표현'&&lastSentence&&!lastSentence.translation){lastSentence.translation=cleaned}
+        else addNote(cleaned);
+        if(pendingWrong)pendingWrongDirect=false;
+        continue;
+      }
+      if(isEnglishSentence(cleaned)){
+        const subtype=sentenceSubtype(current.title);
+        const contrast=(current.title==='표현 교정'&&pendingWrong&&pendingWrongDirect)?pendingWrong:'';
+        addSentence(cleaned,subtype,{contrast});pendingWrong='';pendingWrongDirect=false;continue;
+      }
+    }
+    if(isEnglishSentence(rawLine)){
+      const parts=splitEnglishSentences(rawLine);
+      let first=true;
+      for(const part of parts){
+        const contrast=(current.title==='표현 교정'&&first&&pendingWrong&&pendingWrongDirect)?pendingWrong:'';
+        addSentence(part,sentenceSubtype(current.title),contrast?{contrast}:{});first=false;
+      }
+      pendingWrong='';pendingWrongDirect=false;continue;
+    }
+    addNote(plain);
+    if(pendingWrong)pendingWrongDirect=false;
+  }
+  pushCurrent();
+  const seenW=new Set(),seenS=new Set();
+  for(const c of chapters){
+    c.notes=[...new Set(c.notes.map(cleanUserText).filter(Boolean))];
+    c.items=c.items.filter(it=>{
+      if(it.type==='word'){const k=cleanUserText(it.front).toLowerCase();if(seenW.has(k))return false;seenW.add(k);return true}
+      const k=cleanEnglishMarker(it.front).toLowerCase();if(seenS.has(k))return false;seenS.add(k);return true;
+    });
+    const validKeys=new Set(c.items.map(reviewKey));
+    c.flow=(c.flow||[]).filter(b=>b.type!=='item'||validKeys.has(b.key));
+  }
+  return repairLinkedIds(ensureLinkedExamples(chapters.filter(c=>c.items.length||c.notes.length||c.flow.length)));
+}
+
+function parseAndSave(){
+  const raw=document.getElementById('rawInput').value.trim(); if(!raw)return alert('학습 내용을 입력해 주세요.');
+  const date=document.getElementById('studyDate').value||today(); const title=document.getElementById('studyTitle').value.trim()||'오늘의 영어 연습';
+  const chapters=parseContent(raw); const wordCount=chapters.flatMap(c=>c.items).filter(i=>i.type==='word').length; const sentCount=chapters.flatMap(c=>c.items).filter(i=>i.type==='sentence').length;
+  if(!wordCount&&!sentCount)return alert('영어 단어나 영어 문장을 찾지 못했습니다. 입력 형식을 확인해 주세요.');
+  const existing=db.sessions.find(s=>s.date===date);
+  if(existing&&!confirm(`${date} 학습 기록이 이미 있습니다. 새 내용으로 교체할까요?`))return;
+  const session={id:existing?.id||uid(),date,title,raw,chapters,createdAt:existing?.createdAt||Date.now(),updatedAt:Date.now()};
+  db.sessions=db.sessions.filter(s=>s.date!==date);db.sessions.push(session);db.sessions.sort((a,b)=>b.date.localeCompare(a.date));saveDB();
+  alert(`저장되었습니다.\n단어 ${wordCount}개 · 영어 문장 ${sentCount}개`);switchTab('archive');
+}
+
+function allItems(){return db.sessions.flatMap(s=>s.chapters.flatMap(c=>c.items.map(i=>({...i,date:s.date,sessionTitle:s.title,chapter:c.title,sessionId:s.id}))))}
+function words(){return allItems().filter(x=>x.type==='word')}
+function sentences(){return allItems().filter(x=>x.type==='sentence')}
+function findStoredItem(sessionId,itemId){const s=db.sessions.find(x=>x.id===sessionId);if(!s)return null;for(const c of s.chapters){const it=c.items.find(x=>x.id===itemId);if(it)return it}return null}
+function isDue(item){if(item.state==='unknown'||item.state==='new')return true;return !!item.nextReview&&item.nextReview<=today()}
+function scheduleAfterKnown(streak){const intervals=[1,3,7,14,30,60,90];return intervals[Math.min(Math.max(streak-1,0),intervals.length-1)]}
+function setState(sessionId,itemId,state,opts={}){
+  const it=findStoredItem(sessionId,itemId);if(!it)return;
+  it.state=state;it.reviewCount=(it.reviewCount||0)+1;it.lastReviewed=today();
+  if(state==='known'){it.correctCount=(it.correctCount||0)+1;it.streak=(it.streak||0)+1;it.nextReview=addDays(today(),scheduleAfterKnown(it.streak))}
+  else{it.streak=0;it.nextReview=today()}
+  localStorage.setItem(KEY,JSON.stringify(db));renderAll();
+  if(!opts.silent){const s=document.getElementById('saveStatus');s.textContent='암기 상태 저장됨';setTimeout(()=>{s.textContent='로컬 자동 저장'},900)}
+}
+function stateButtons(x){return `<div class="state"><button class="stateBtn known ${x.state==='known'?'active':''}" onclick="setState('${x.sessionId}','${x.id}','known')">외움</button><button class="stateBtn unknown ${x.state==='unknown'?'active':''}" onclick="setState('${x.sessionId}','${x.id}','unknown')">못 외움</button></div>`}
+function stateName(s){return s==='known'?'외움':s==='unknown'?'못 외움':'미체크'}
+function statePill(s){return s==='known'?'<span class="pill green">외움</span>':s==='unknown'?'<span class="pill red">못 외움</span>':'<span class="pill yellow">미체크</span>'}
+function typeName(i){if(i.type==='word')return i.subtype==='core'?'핵심 단어':'단어';const m={'vocab-example':'연계 문장','native':'원어민 표현','correction':'표현 교정','speaking':'말하기','general':'영어 문장'};return m[i.subtype]||'영어 문장'}
+function dueText(i){if(i.state==='unknown')return'지금 다시';if(i.state==='new')return'첫 복습';if(i.nextReview&&i.nextReview<=today())return'복습일';return i.nextReview?`${i.nextReview} 예정`:'복습 미정'}
+function masteryText(i){return i.streak>0?`${i.streak}회 연속 성공`:(i.reviewCount?`${i.reviewCount}회 확인`:'아직 미확인')}
+function speak(text){if(!('speechSynthesis'in window))return alert('이 브라우저는 음성 읽기를 지원하지 않습니다.');speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.9;speechSynthesis.speak(u)}
+
+function renderDashboard(){
+  const items=allItems(),ws=items.filter(x=>x.type==='word'),ss=items.filter(x=>x.type==='sentence'),due=items.filter(isDue),known=items.filter(x=>x.state==='known'),unknown=items.filter(x=>x.state==='unknown');
+  document.getElementById('statDays').textContent=db.sessions.length;document.getElementById('statWords').textContent=ws.length;document.getElementById('statSentences').textContent=ss.length;document.getElementById('statDue').textContent=due.length;document.getElementById('statCoreWords').textContent=`핵심 단어 ${ws.filter(x=>x.subtype==='core').length}`;
+  const priority=[...due].sort((a,b)=>(a.state==='unknown'?-2:a.state==='new'?-1:0)-(b.state==='unknown'?-2:b.state==='new'?-1:0)).slice(0,7);
+  document.getElementById('dueList').innerHTML=priority.length?priority.map(x=>`<div class="dueRow"><div class="dueMain"><div class="dueTitle">${esc(x.front)}</div><div class="dueSub">${esc(x.date)} · ${esc(typeName(x))} · ${esc(dueText(x))}</div></div>${x.type==='word'&&x.subtype==='core'?'<span class="pill blue">핵심</span>':statePill(x.state)}</div>`).join(''):'<div class="empty">오늘 예정된 복습이 없습니다.</div>';
+  const total=items.length,rate=total?Math.round(known.length/total*100):0;
+  document.getElementById('masterySummary').innerHTML=`<div class="grid g2"><div><div class="stat">${rate}%</div><div class="statlabel">현재 외움 비율</div></div><div><div class="stat">${unknown.length}</div><div class="statlabel">못 외운 항목</div></div></div><div class="divider"></div><div class="small muted">단어 외움 ${ws.filter(x=>x.state==='known').length}/${ws.length} · 문장 외움 ${ss.filter(x=>x.state==='known').length}/${ss.length}</div>`;
+  document.getElementById('recentList').innerHTML=db.sessions.slice(0,6).map(s=>{const its=s.chapters.flatMap(c=>c.items);return`<div class="date-card" onclick="openSession('${s.id}')"><b>${esc(s.date)} · ${esc(s.title)}</b><div class="muted small" style="margin-top:4px">단어 ${its.filter(i=>i.type==='word').length} · 영어 문장 ${its.filter(i=>i.type==='sentence').length} · 복습 필요 ${its.filter(isDue).length}</div></div>`}).join('')||'<div class="empty">첫 학습 내용을 저장해 보세요.</div>';
+}
+
+function linkedSentenceForWord(x){
+  return sentences().find(si=>si.sessionId===x.sessionId&&si.subtype==='vocab-example'&&((si.linkedWordId&&si.linkedWordId===x.id)||(si.linkedWord&&cleanUserText(si.linkedWord).toLowerCase()===cleanUserText(x.front).toLowerCase())||cleanEnglishMarker(si.front).toLowerCase()===cleanEnglishMarker(x.example||'').toLowerCase()));
+}
+function renderWords(){
+  const q=(document.getElementById('wordSearch')?.value||'').toLowerCase(),kind=document.getElementById('wordKind')?.value||'all',state=document.getElementById('wordState')?.value||'all';
+  const list=words().filter(x=>{const linked=linkedSentenceForWord(x);const hay=`${x.front} ${x.meaning||''} ${x.example||''} ${linked?.front||''} ${x.chapter} ${x.date}`.toLowerCase();return(!q||hay.includes(q))&&(kind==='all'||x.subtype===kind)&&(state==='all'||(state==='due'?isDue(x):x.state===state))});
+  document.getElementById('wordList').innerHTML=list.length?list.map(x=>{const linked=linkedSentenceForWord(x);return `<div class="studyCard"><div class="studyRow"><div class="studyRowMain"><div class="rowLabel">${x.subtype==='core'?'핵심 단어':'단어'}</div><div class="term">${esc(x.front)}</div><div class="meaning">${x.meaning?esc(x.meaning):'<span class="muted">뜻 정보 없음</span>'}</div><div class="itemMeta"><span class="tag ${x.subtype==='core'?'core':''}">${esc(typeName(x))}</span><span class="tag">${esc(x.date)}</span>${isDue(x)?'<span class="tag due">복습 필요</span>':''}</div><div class="small muted" style="margin-top:8px">${esc(masteryText(x))} · ${esc(dueText(x))}</div></div><div class="studyRowActions"><button class="btn secondary tiny" onclick="speak('${jsq(x.front)}')">듣기</button>${stateButtons(x)}</div></div>${linked?`<div class="studyRow"><div class="studyRowMain"><div class="rowLabel">단어 연계 문장</div><div class="linkedSentence">${esc(linked.front)}</div>${linked.translation?`<div class="meaning">${esc(linked.translation)}</div>`:''}<div class="small muted" style="margin-top:8px">${esc(masteryText(linked))} · ${esc(dueText(linked))}</div></div><div class="studyRowActions"><button class="btn secondary tiny" onclick="speak('${jsq(linked.front)}')">듣기</button>${stateButtons(linked)}</div></div>`:(x.example?`<div class="studyRow"><div class="studyRowMain"><div class="rowLabel">단어 연계 문장</div><div class="linkedSentence">${esc(x.example)}</div></div></div>`:'')}</div>`}).join(''):'<div class="card empty" style="grid-column:1/-1">조건에 맞는 단어가 없습니다.</div>';
+}
+
+function renderSentences(){
+  const q=(document.getElementById('sentenceSearch')?.value||'').toLowerCase(),kind=document.getElementById('sentenceKind')?.value||'all',state=document.getElementById('sentenceState')?.value||'all';
+  const list=sentences().filter(x=>{const hay=`${x.front} ${x.translation||''} ${x.note||''} ${x.chapter} ${x.date}`.toLowerCase();return(!q||hay.includes(q))&&(kind==='all'||x.subtype===kind)&&(state==='all'||(state==='due'?isDue(x):x.state===state))});
+  document.getElementById('sentenceList').innerHTML=list.length?list.map(x=>`<div class="studyCard"><div class="studyRow"><div class="studyRowMain"><div class="rowLabel">${esc(typeName(x))}</div><div class="itemTitle">${esc(x.front)}</div>${x.translation?`<div class="meaning">${esc(x.translation)}</div>`:''}${x.contrast?`<div class="noteBox"><div class="noteLabel">교정 전 표현</div>${esc(x.contrast)}</div>`:''}<div class="itemMeta"><span class="tag">${esc(x.date)}</span>${isDue(x)?'<span class="tag due">복습 필요</span>':''}</div><div class="small muted" style="margin-top:8px">${esc(masteryText(x))} · ${esc(dueText(x))}</div></div><div class="studyRowActions"><button class="btn secondary tiny" onclick="speak('${jsq(x.front)}')">듣기</button>${stateButtons(x)}</div></div></div>`).join(''):'<div class="card empty" style="grid-column:1/-1">조건에 맞는 영어 문장이 없습니다.</div>';
+}
+
+function chapterHasFilterMatch(c,s,q,type,state){
+  const noteText=(c.notes||[]).join(' ').toLowerCase(); if(type==='notes')return(!q||(`${s.date} ${s.title} ${c.title} ${noteText}`.toLowerCase()).includes(q));
+  return c.items.some(i=>{const hay=`${s.date} ${s.title} ${c.title} ${i.front} ${i.meaning||''} ${i.example||''} ${i.translation||''}`.toLowerCase();return(!q||hay.includes(q))&&(type==='all'||i.type===type)&&(state==='all'||i.state===state)})||(type==='all'&&state==='all'&&(!q||noteText.includes(q)));
+}
+function renderSourceFlow(c,s){
+  if(!Array.isArray(c.flow)||!c.flow.length)return'';
+  const itemMap=new Map(c.items.map(i=>[reviewKey(i),i]));
+  let out='<div class="flow">';
+  for(const b of c.flow){
+    if(b.type==='note'){
+      out+=`<div class="flowBlock flowNote">${esc(b.text||'')}</div>`;
+      continue;
+    }
+    if(b.type==='wrong'){
+      out+=`<div class="flowBlock"><div class="flowWrong"><div class="flowWrongLabel">교정 전 표현</div><div>${esc(b.text||'')}</div></div></div>`;
+      continue;
+    }
+    if(b.type==='item'){
+      const i=itemMap.get(b.key);if(!i)continue;
+      if(i.type==='word'){
+        out+=`<div class="flowBlock"><div class="flowItem"><div><div class="rowLabel">${esc(typeName(i))}</div><div class="flowItemText">${esc(i.front)}</div>${i.meaning?`<div class="flowTranslation">${esc(i.meaning)}</div>`:''}</div><div class="flowActions">${stateButtons({...i,sessionId:s.id})}</div></div></div>`;
+      }else{
+        out+=`<div class="flowBlock"><div class="flowItem"><div><div class="rowLabel">${esc(typeName(i))}</div><div class="flowItemText">${esc(i.front)}</div>${i.translation?`<div class="flowTranslation">${esc(i.translation)}</div>`:''}</div><div class="flowActions"><button class="btn secondary tiny" onclick="speak('${jsq(i.front)}')">듣기</button>${stateButtons({...i,sessionId:s.id})}</div></div></div>`;
+      }
+    }
+  }
+  out+='</div>';return out;
+}
+
+function renderArchive(){
+  const q=(document.getElementById('archiveSearch')?.value||'').toLowerCase(),type=document.getElementById('archiveType')?.value||'all',state=document.getElementById('archiveState')?.value||'all';let html='';
+  for(const s of db.sessions){const chapters=s.chapters.filter(c=>chapterHasFilterMatch(c,s,q,type,state));if(!chapters.length)continue;const all=s.chapters.flatMap(c=>c.items);html+=`<div class="card"><div class="section-title"><div><h3>${esc(s.date)} · ${esc(s.title)}</h3><div class="small muted">단어 ${all.filter(i=>i.type==='word').length} · 영어 문장 ${all.filter(i=>i.type==='sentence').length}</div></div><button class="btn secondary" onclick="deleteSession('${s.id}')">이 날짜 삭제</button></div>`;
+    for(const c of chapters){
+      const items=c.items.filter(i=>{const hay=`${s.date} ${s.title} ${c.title} ${i.front} ${i.meaning||''} ${i.example||''} ${i.translation||''}`.toLowerCase();return(type==='all'||i.type===type)&&(state==='all'||i.state===state)&&(!q||hay.includes(q)||c.title.toLowerCase().includes(q))});
+      const notes=(c.notes||[]).filter(n=>!q||`${s.date} ${s.title} ${c.title} ${n}`.toLowerCase().includes(q));
+      if(type==='notes'&&!notes.length)continue;if(type!=='notes'&&!items.length&&!(type==='all'&&state==='all'&&notes.length))continue;
+      const cls=c.kind==='words'?'words':c.kind==='sentences'?'sentences':'notes';html+=`<div class="card chapter ${cls}"><div class="section-title"><h4>${esc(c.title)}</h4><span class="pill">${items.length} 학습 항목</span></div>`;
+      const useFlow=type==='all'&&state==='all'&&!q&&Array.isArray(c.flow)&&c.flow.length;
+      if(useFlow){html+=renderSourceFlow(c,s)}else{
+        if((type==='all'||type==='notes')&&state==='all'&&notes.length)html+=`<div class="noteBox"><div class="noteLabel">학습 노트 · 체크 대상 아님</div>${notes.map(esc).join('\n\n')}</div>`;
+        if(type!=='notes')for(const i of items){html+=`<div class="item"><div class="itemMain"><div class="rowLabel">${esc(typeName(i))}</div><div class="itemTitle">${esc(i.front)}</div>${i.type==='word'&&i.meaning?`<div class="itemSub">${esc(i.meaning)}</div>`:''}${i.type==='sentence'&&i.translation?`<div class="itemSub">${esc(i.translation)}</div>`:''}${i.type==='sentence'&&i.contrast?`<div class="itemSub">교정 전 표현: ${esc(i.contrast)}</div>`:''}<div class="itemMeta"><span class="tag ${i.type==='word'&&i.subtype==='core'?'core':''}">${esc(stateName(i.state))}</span>${isDue(i)?'<span class="tag due">복습 필요</span>':''}</div></div>${stateButtons({...i,sessionId:s.id})}</div>`}
+      }
+      html+='</div>';
+    }html+='</div>';
+  }
+  document.getElementById('archiveList').innerHTML=html||'<div class="card empty">조건에 맞는 학습 기록이 없습니다.</div>';
+}
+function openSession(id){const s=db.sessions.find(x=>x.id===id);switchTab('archive');document.getElementById('archiveSearch').value=s?.date||'';document.getElementById('archiveType').value='all';document.getElementById('archiveState').value='all';renderArchive()}
+function deleteSession(id){if(confirm('이 날짜의 학습 기록을 삭제할까요?')){db.sessions=db.sessions.filter(s=>s.id!==id);saveDB()}}
+
+function startReview(forceScope,forceType){
+  const scope=forceScope||document.getElementById('reviewScope').value;const type=forceType||document.getElementById('reviewType').value;const from=document.getElementById('reviewFrom').value;const to=document.getElementById('reviewTo').value;
+  reviewQueue=allItems().filter(x=>{
+    const scopeOK=scope==='all'||(scope==='due'?isDue(x):x.state===scope);const typeOK=type==='all'||(type==='coreword'?(x.type==='word'&&x.subtype==='core'):x.type===type);return scopeOK&&typeOK&&(!from||x.date>=from)&&(!to||x.date<=to);
+  });
+  reviewQueue.sort((a,b)=>{const aw=a.state==='unknown'?0:a.state==='new'?1:2,bw=b.state==='unknown'?0:b.state==='new'?1:2;return aw-bw||Math.random()-.5});reviewIndex=0;reviewRepeatCount={};switchTab('review');renderReviewCard();
+}
+function reviewPromptFor(x){
+  const direction=document.getElementById('reviewDirection').value;
+  if(x.type==='word'){
+    if(direction==='recall'&&x.meaning)return{label:'뜻을 보고 영어 단어를 떠올리세요',question:x.meaning,answer:`${x.front}${x.example?`\n\nExample\n${x.example}`:''}`};
+    return{label:'단어의 뜻과 사용법을 떠올리세요',question:x.front,answer:`${x.meaning||'뜻 정보 없음'}${x.example?`\n\nExample\n${x.example}`:''}`};
+  }
+  if((direction==='recall'||direction==='auto')&&x.translation)return{label:'한국어 의미를 영어로 말해 보세요',question:x.translation,answer:x.front+(x.contrast?`\n\nAvoid\n${x.contrast}`:'')};
+  return{label:'문장을 소리 내어 자연스럽게 말해 보세요',question:x.front,answer:x.translation||x.note||'문장을 자연스럽게 말할 수 있었는지 스스로 확인하세요.'};
+}
+function renderReviewCard(){
+  const area=document.getElementById('reviewArea');if(!reviewQueue.length){area.innerHTML='<div class="card empty">선택한 조건에 복습할 항목이 없습니다.</div>';return}
+  if(reviewIndex>=reviewQueue.length){const baseCount=Object.keys(reviewRepeatCount).length?reviewQueue.length-Object.values(reviewRepeatCount).reduce((a,b)=>a+b,0):reviewQueue.length;area.innerHTML=`<div class="card empty"><b>복습을 완료했습니다.</b><div class="small muted" style="margin-top:7px">기본 ${baseCount}개 항목을 확인했고, 놓친 항목은 같은 세트에서 다시 노출했습니다.</div><div style="margin-top:14px"><button class="btn primary" onclick="startReview()">같은 조건으로 다시 복습</button></div></div>`;return}
+  const x=reviewQueue[reviewIndex],p=reviewPromptFor(x),pct=Math.round(reviewIndex/reviewQueue.length*100);const repeat=reviewRepeatCount[x.id]||0;
+  area.innerHTML=`<div class="card reviewCard"><div class="progress"><div style="width:${pct}%"></div></div><div class="reviewMeta">${reviewIndex+1} / ${reviewQueue.length} · ${esc(x.date)} · ${esc(typeName(x))}${repeat?' · 재도전':''}</div><div class="reviewPromptLabel">${esc(p.label)}</div><div class="reviewQ">${esc(p.question)}</div><div class="actions"><button class="btn secondary" onclick="toggleReviewAnswer()">정답/설명 보기</button><button class="btn secondary" onclick="speak('${jsq(x.type==='word'?x.front:x.front)}')">영어 듣기</button></div><div id="reviewAnswer" class="reviewAnswer"><div class="big">${esc(p.answer.split('\n')[0])}</div>${p.answer.split('\n').slice(1).join('\n')?`<div class="small muted">${esc(p.answer.split('\n').slice(1).join('\n'))}</div>`:''}</div><div class="reviewActions"><button class="btn green" onclick="answerReview('known')">외웠음</button><button class="btn danger" onclick="answerReview('unknown')">아직 못 외움</button><button class="btn secondary" onclick="skipReview()">건너뛰기</button></div><div class="shortcut"><span class="kbd">Space</span> 정답 · <span class="kbd">1</span> 외웠음 · <span class="kbd">2</span> 못 외움</div></div>`;
+}
+function toggleReviewAnswer(){document.getElementById('reviewAnswer')?.classList.toggle('show')}
+function answerReview(state){
+  const x=reviewQueue[reviewIndex];setState(x.sessionId,x.id,state,{silent:true});
+  if(state==='unknown'&&(reviewRepeatCount[x.id]||0)<1){reviewRepeatCount[x.id]=(reviewRepeatCount[x.id]||0)+1;reviewQueue.push({...x})}
+  reviewIndex++;renderReviewCard();
+}
+function skipReview(){reviewIndex++;renderReviewCard()}
+document.addEventListener('keydown',e=>{if(!document.getElementById('review').classList.contains('active'))return;const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;if(e.code==='Space'){e.preventDefault();toggleReviewAnswer()}if(e.key==='1')answerReview('known');if(e.key==='2')answerReview('unknown')});
+
+function exportJSON(){const payload={app:'English Mastery Studio',version:4,exportedAt:new Date().toISOString(),data:db};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`english-mastery-backup-${today()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),300)}
+function validateJSONFile(input){const f=input.files&&input.files[0];if(f&&!f.name.toLowerCase().endsWith('.json')){input.value='';alert('.json 확장자 파일만 선택할 수 있습니다.')}}
+function importJSON(){const input=document.getElementById('importFile'),f=input.files&&input.files[0];if(!f)return alert('JSON 파일을 선택해 주세요.');if(!f.name.toLowerCase().endsWith('.json')){input.value='';return alert('.json 확장자 파일만 불러올 수 있습니다.')}const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);const incoming=j.data||j;if(!incoming||!Array.isArray(incoming.sessions))throw new Error('invalid');if(!confirm('현재 로컬 학습 데이터를 선택한 JSON 데이터로 교체할까요?'))return;db=migrateDB(incoming);saveDB();input.value='';alert('JSON 학습 데이터가 복원되었습니다.')}catch(e){alert('올바른 English Mastery JSON 파일이 아닙니다.')}};r.readAsText(f)}
+function clearAll(){if(confirm('브라우저에 저장된 모든 학습 기록과 암기 상태를 삭제합니다. 계속할까요?')){db={version:4,sessions:[]};saveDB()}}
+function renderAll(){renderDashboard();renderWords();renderSentences();renderArchive()}
+function esc(s=''){return stripDecorativeIcons(stripMarkdown(String(s))).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function jsq(s=''){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' ')}
+
+function loadSample(){
+  document.getElementById('studyTitle').value='Managing a Project Delay';
+  document.getElementById('rawInput').value=`오늘의 영어 연습 — Managing a Project Delay
+
+오늘은 디자인 프로젝트에서 자주 발생하는 일정 지연을 팀이나 상사에게 설명하는 영어를 연습하겠습니다. 단순히 “The schedule is delayed.”라고 말하기보다, 원인·영향·대책을 자연스럽게 설명하는 표현에 집중해 보겠습니다.
+
+핵심 단어 10개
+
+Word  뜻  Example sentence
+
+deadline  마감일  We need to meet the deadline by the end of this month.
+delay  지연 / 지연시키다  The project was delayed because of a technical issue.
+timeline  프로젝트 일정  We may need to adjust the project timeline.
+milestone  주요 단계, 중간 목표  We've reached an important milestone in the project.
+bottleneck  병목, 진행을 막는 요소  User testing has become a bottleneck in the process.
+allocate  배정하다  We need to allocate more resources to prototyping.
+estimate  예상하다, 추산하다  We estimate that we'll need three more days.
+on track  계획대로 진행 중인  The project is still on track for the November launch.
+fall behind  일정에 뒤처지다  We're starting to fall behind schedule.
+catch up  뒤처진 일정을 따라잡다  We may be able to catch up next week.
+
+지난번 저장해 두신 단어와 연결하면 이런 문장도 만들 수 있습니다. constraint → prioritize → iteration → refine 순서로 기억해 보시면 좋습니다.
+
+Because of time constraints, we had to prioritize the most important features. After another iteration, we refined the final design.
+
+원어민이 자주 쓰는 표현
+
+We're running a little behind schedule.
+→ 일정이 조금 늦어지고 있습니다.
+
+We've run into an unexpected issue.
+→ 예상치 못한 문제가 발생했습니다.
+
+We may need to push the deadline back by a week.
+→ 마감일을 일주일 정도 미뤄야 할 수도 있습니다.
+
+We're working to get the project back on track.
+→ 프로젝트를 다시 정상 일정으로 돌리려고 하고 있습니다.
+
+We're still on track to launch in October.
+→ 여전히 10월 출시 일정에는 문제가 없습니다.
+
+한국어식 표현을 자연스럽게 바꾸기
+
+X The schedule has a problem.
+→ We're running behind schedule.
+
+X Our schedule is late.
+→ The project is slightly behind schedule.
+
+We're running slightly behind schedule because of an unexpected technical issue, but we're working to get the project back on track.
+
+오늘의 말하기 연습
+
+You're leading a design project. User testing is taking longer than expected, so the project may be delayed by one week. Explain the situation to your manager.
+
+We're currently running a little behind schedule because...
+The main issue is...
+We expect that...
+To get the project back on track, we're going to...`;
+}
+
+
+// Firebase module bridge: classic-script data stays private, these functions provide safe access.
+window.getEnglishMasteryCloudPayload=function(){
+  return {app:'English Mastery Studio',version:4,exportedAt:new Date().toISOString(),data:db};
+};
+window.applyEnglishMasteryCloudPayload=function(payload){
+  const incoming=(payload&&payload.data)||payload;
+  if(!incoming||!Array.isArray(incoming.sessions))throw new Error('invalid cloud data');
+  db=migrateDB(incoming);localStorage.setItem(KEY,JSON.stringify(db));renderAll();
+};
+window.getEnglishMasteryCloudSummary=function(){
+  const items=allItems();
+  return {sessions:db.sessions.length,words:items.filter(x=>x.type==='word').length,sentences:items.filter(x=>x.type==='sentence').length,due:items.filter(isDue).length};
+};
+
+renderAll();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getStorage, ref, uploadString, getBytes } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAAYNgibjfk61ZVOiCGeIwpkornY700KtM",
+  authDomain: "prototype-kyuil.firebaseapp.com",
+  projectId: "prototype-kyuil",
+  storageBucket: "prototype-kyuil.firebasestorage.app",
+  messagingSenderId: "64201667970",
+  appId: "1:64201667970:web:a60b4a32b8ca88b1a34b9b",
+  measurementId: "G-9CCKR022X0"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const firestore=getFirestore(app);
+const storage=getStorage(app);
+const provider=new GoogleAuthProvider();
+provider.setCustomParameters({prompt:'select_account'});
+let currentUser=null;
+let cloudTimer=null;
+let cloudBusy=false;
+const AUTOSYNC_KEY='englishMastery_cloudAutoSync_v1';
+
+function el(id){return document.getElementById(id)}
+function isMobile(){return window.matchMedia('(max-width: 760px)').matches || window.matchMedia('(pointer: coarse)').matches}
+function canUseFirstPartyRedirect(){const h=location.hostname.toLowerCase();return h.endsWith('.firebaseapp.com')||h.endsWith('.web.app')||h===firebaseConfig.authDomain.toLowerCase()}
+function cloudFileRef(uid){return ref(storage,`users/${uid}/english-mastery/english-mastery-backup.json`)}
+function cloudMetaRef(uid){return doc(firestore,'users',uid,'apps','englishMastery')}
+function autoSyncEnabled(){return localStorage.getItem(AUTOSYNC_KEY)!=='0'}
+function fmtTime(v){try{return new Date(v).toLocaleString('ko-KR')}catch{return String(v||'')}}
+
+function setStatus(message,type=''){
+  const box=el('cloudStatusBox');if(box){box.textContent=message;box.className='cloudStatusBox'+(type?' '+type:'')}
+}
+function updateCloudUI(){
+  const signed=!!currentUser;
+  const header=el('cloudHeaderStatus'),pill=el('cloudAuthPill'),login=el('cloudLoginBtn'),logout=el('cloudLogoutBtn'),save=el('cloudSaveBtn'),load=el('cloudLoadBtn');
+  if(header){header.textContent=signed?'클라우드 연결':'클라우드 로그아웃';header.className='pill '+(signed?'blue':'')}
+  if(pill){pill.textContent=signed?'로그인됨':'로그아웃';pill.className='pill '+(signed?'blue':'')}
+  if(login)login.classList.toggle('hidden',signed);if(logout)logout.classList.toggle('hidden',!signed);if(save)save.disabled=!signed||cloudBusy;if(load)load.disabled=!signed||cloudBusy;
+  const n=el('cloudUserName'),e=el('cloudUserEmail');
+  if(n)n.textContent=signed?(currentUser.displayName||'Google 사용자'):'Google 로그인이 필요합니다';
+  if(e)e.textContent=signed?(currentUser.email||`UID: ${currentUser.uid}`):'로그인하면 기기 간 학습 데이터를 동기화할 수 있습니다.';
+  const cb=el('cloudAutoSync');if(cb)cb.checked=autoSyncEnabled();
+}
+function setBusy(v){cloudBusy=v;updateCloudUI()}
+function explainError(error){
+  const code=error&&error.code?String(error.code):'';
+  if(code.includes('unauthorized-domain'))return '현재 주소가 Firebase Authentication의 승인된 도메인에 등록되어 있지 않습니다.';
+  if(code.includes('popup-blocked'))return '브라우저가 로그인 팝업을 차단했습니다. 팝업을 허용한 뒤 다시 시도해 주세요.';
+  if(code.includes('storage/unauthorized')||code.includes('permission-denied'))return 'Firebase 보안 규칙에서 이 계정의 읽기/쓰기가 허용되지 않았습니다.';
+  if(code.includes('storage/object-not-found'))return '클라우드에 저장된 학습 JSON 백업이 아직 없습니다.';
+  return error&&error.message?error.message:'알 수 없는 오류가 발생했습니다.';
+}
+
+window.setCloudAutoSync=function(enabled){localStorage.setItem(AUTOSYNC_KEY,enabled?'1':'0');setStatus(enabled?'자동 클라우드 저장이 켜졌습니다.':'자동 클라우드 저장이 꺼졌습니다.');};
+
+window.firebaseLogin=async function(){
+  if(location.protocol==='file:'){
+    setStatus('file:// 주소에서는 Google OAuth가 제한될 수 있습니다. 이 HTML을 HTTPS 주소에 올린 뒤 로그인해 주세요.','error');
+    el('fileProtocolNotice')?.classList.remove('hidden');
+    return;
+  }
+  try{
+    setBusy(true);setStatus('Google 로그인을 준비하는 중입니다...','busy');await setPersistence(auth,browserLocalPersistence);
+    if(isMobile()&&canUseFirstPartyRedirect()){
+      sessionStorage.setItem('englishMastery_loginPending','1');
+      await signInWithRedirect(auth,provider);
+    }else{
+      await signInWithPopup(auth,provider);
+    }
+  }catch(error){setStatus('로그인 실패: '+explainError(error),'error');setBusy(false)}
+};
+
+window.firebaseLogout=async function(){
+  try{await signOut(auth);setStatus('Google 계정에서 로그아웃했습니다. 로컬 데이터는 그대로 유지됩니다.')}catch(error){setStatus('로그아웃 실패: '+explainError(error),'error')}
+};
+
+async function saveCloud({silent=false}={}){
+  if(!currentUser){if(!silent)setStatus('먼저 Google 로그인을 해 주세요.','error');return false}
+  if(cloudBusy)return false;
+  try{
+    setBusy(true);if(!silent)setStatus('학습 JSON 데이터를 Firebase에 저장하는 중입니다...','busy');
+    const payload=window.getEnglishMasteryCloudPayload();
+    const json=JSON.stringify(payload,null,2);
+    await uploadString(cloudFileRef(currentUser.uid),json,'raw',{contentType:'application/json',customMetadata:{app:'English Mastery Studio',version:String(payload.version)}});
+    const summary=window.getEnglishMasteryCloudSummary();
+    await setDoc(cloudMetaRef(currentUser.uid),{app:'English Mastery Studio',version:payload.version,storagePath:`users/${currentUser.uid}/english-mastery/english-mastery-backup.json`,summary,updatedAt:serverTimestamp(),updatedAtClient:new Date().toISOString()},{merge:true});
+    setStatus(`클라우드 저장 완료\n${fmtTime(new Date())} · 학습일 ${summary.sessions}일 · 단어 ${summary.words}개 · 문장 ${summary.sentences}개`,'ok');
+    return true;
+  }catch(error){setStatus('클라우드 저장 실패: '+explainError(error),'error');return false}finally{setBusy(false)}
+}
+window.firebaseSaveCloud=()=>saveCloud({silent:false});
+
+window.firebaseLoadCloud=async function(){
+  if(!currentUser){setStatus('먼저 Google 로그인을 해 주세요.','error');return}
+  if(cloudBusy)return;
+  try{
+    setBusy(true);setStatus('Firebase에서 학습 JSON 데이터를 불러오는 중입니다...','busy');
+    const bytes=await getBytes(cloudFileRef(currentUser.uid),20*1024*1024);
+    const json=new TextDecoder('utf-8').decode(bytes);
+    const payload=JSON.parse(json);
+    const metaSnap=await getDoc(cloudMetaRef(currentUser.uid)).catch(()=>null);
+    const cloudDate=payload.exportedAt||metaSnap?.data()?.updatedAtClient||'';
+    const localSummary=window.getEnglishMasteryCloudSummary();
+    const incoming=((payload&&payload.data)||payload)?.sessions?.length||0;
+    const ok=confirm(`클라우드 데이터를 이 기기에 불러올까요?\n\n현재 기기: 학습일 ${localSummary.sessions}일\n클라우드: 학습일 ${incoming}일${cloudDate?`\n클라우드 저장 시각: ${fmtTime(cloudDate)}`:''}\n\n현재 로컬 데이터는 클라우드 데이터로 교체됩니다.`);
+    if(!ok){setStatus('클라우드 불러오기를 취소했습니다.');return}
+    window.__cloudApplying=true;
+    try{window.applyEnglishMasteryCloudPayload(payload)}finally{window.__cloudApplying=false}
+    const summary=window.getEnglishMasteryCloudSummary();
+    setStatus(`클라우드 불러오기 완료\n학습일 ${summary.sessions}일 · 단어 ${summary.words}개 · 문장 ${summary.sentences}개`,'ok');
+  }catch(error){setStatus('클라우드 불러오기 실패: '+explainError(error),'error')}finally{setBusy(false)}
+};
+
+window.cloudSyncSchedule=function(){
+  if(!currentUser||!autoSyncEnabled()||window.__cloudApplying)return;
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>saveCloud({silent:true}),1200);
+};
+
+if(location.protocol==='file:')el('fileProtocolNotice')?.classList.remove('hidden');
+try{await setPersistence(auth,browserLocalPersistence)}catch{}
+try{
+  const redirectResult=await getRedirectResult(auth);
+  if(redirectResult?.user){sessionStorage.removeItem('englishMastery_loginPending');setStatus(`${redirectResult.user.displayName||'Google 사용자'}님 로그인 완료. 현재 기기의 데이터 또는 클라우드 데이터를 선택해 동기화하세요.`,'ok')}
+}catch(error){setStatus('로그인 처리 실패: '+explainError(error),'error')}
+
+onAuthStateChanged(auth,user=>{
+  currentUser=user||null;setBusy(false);updateCloudUI();
+  if(user){
+    if(!el('cloudStatusBox')?.classList.contains('ok'))setStatus(`${user.displayName||'Google 사용자'}님 로그인됨\n${user.email||''}\n클라우드 백업을 저장하거나 불러올 수 있습니다.`,'ok');
+  }else setStatus('현재 상태: Google 로그인 대기 중');
+});
+updateCloudUI();
+</script>
+
+</body>
+</html>
