@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#F4F4F2" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="영어 공부" />
-<title>영어 공부</title>
+<meta name="apple-mobile-web-app-title" content="K-English" />
+<title>K-English Mastery Studio</title>
 <style>
 :root{
   --base:17px;
@@ -56,7 +56,8 @@ header{position:sticky;top:0;z-index:40;background:var(--paper);
 .hd{display:flex;align-items:center;gap:.5rem;height:var(--headh);
   padding:0 max(var(--pad),var(--sar)) 0 max(var(--pad),var(--sal));max-width:60rem;margin:0 auto}
 .hd .tt{flex:1;min-width:0}
-.hd h1{font-size:1.05rem;margin:0;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd h1{font-size:1rem;margin:0;font-weight:800;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:400px){.hd h1{font-size:.9rem}}
 .hd .sub{font-size:.76rem;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dot{width:.55rem;height:.55rem;border-radius:50%;background:var(--muted);flex:none;transition:background .2s}
 .dot.saved{background:var(--accent)} .dot.dirty{background:var(--warn)} .dot.error{background:var(--danger)}
@@ -88,6 +89,7 @@ h3.t{font-size:1rem;margin:0;letter-spacing:-.01em;font-weight:800}
   background:var(--ink);color:var(--paper);font-weight:800;font-size:1rem;display:inline-flex;
   align-items:center;justify-content:center;gap:.4rem;touch-action:manipulation;transition:transform .09s;line-height:1.25}
 .btn:active{transform:scale(.975)}
+.btn svg{width:1.25em;height:1.25em;flex:none}
 .btn[disabled]{opacity:.42;pointer-events:none}
 .btn.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
 html[data-theme="dark"] .btn.acc{color:#08201B}
@@ -173,11 +175,17 @@ html[data-theme="dark"] .step.on .num{color:#08201B}
   border-radius:.7rem;font-size:1.02rem;font-weight:800;color:var(--ink2);display:flex;
   align-items:center;justify-content:center;gap:.3rem;touch-action:manipulation}
 .mark:active{transform:scale(.97)}
-.mark svg{width:1.15rem;height:1.15rem}
+.mark{white-space:nowrap;letter-spacing:-.01em}
+.mark svg{width:1.1rem;height:1.1rem;flex:none;stroke-width:3.2}
 .mark.known.on{background:var(--accent);border-color:var(--accent);color:#fff}
 html[data-theme="dark"] .mark.known.on{color:#08201B}
 .mark.unknown.on{background:var(--danger);border-color:var(--danger);color:#fff}
 html[data-theme="dark"] .mark.unknown.on{color:#1E0C08}
+.mark.star{color:var(--warn)}
+.mark.star.on{background:var(--warn);border-color:var(--warn);color:#fff}
+html[data-theme="dark"] .mark.star.on{color:#1E1707}
+.mark.star svg{width:1.15rem;height:1.15rem;stroke-width:2}
+.tag.star{background:var(--warn-soft);color:var(--warn)}
 .iconsq{flex:none;width:3.4rem;min-height:3.4rem;border:2px solid var(--line);background:var(--surface);
   border-radius:.7rem;display:grid;place-items:center;color:var(--ink2)}
 .iconsq svg{width:1.3rem;height:1.3rem}
@@ -262,8 +270,9 @@ body.reviewing main{padding:0;max-width:none}
 .rvswipe.l{left:.8rem;background:var(--danger-soft);color:var(--danger)}
 .rvswipe.r{right:.8rem;background:var(--accent-soft);color:var(--accent-ink)}
 .rvfoot{flex:none;padding:.5rem .6rem calc(.5rem + var(--sab));display:grid;gap:.45rem}
-.rvgrade{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
-.rvgrade .btn{min-height:3.6rem;font-size:1.05rem}
+.rvgrade{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.rvgrade .btn{min-height:3.7rem;font-size:1.1rem;white-space:nowrap;gap:.45rem;letter-spacing:-.02em}
+.rvgrade .btn svg{width:1.15rem;height:1.15rem;stroke-width:3.4}
 .rvgrade .known{background:var(--accent);color:#fff;border-color:var(--accent)}
 html[data-theme="dark"] .rvgrade .known{color:#08201B}
 .rvgrade .unknown{background:var(--danger);color:#fff;border-color:var(--danger)}
@@ -370,7 +379,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
 <header>
   <div class="hd">
     <div class="tt">
-      <h1>영어 공부</h1>
+      <h1>K-English Mastery Studio</h1>
       <div class="sub" id="hdSub">입력 → 공부 → 복습</div>
     </div>
     <span class="dot" id="saveDot" title="저장 상태"></span>
@@ -472,8 +481,9 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
     </div>
     <div class="chips" id="arcChips">
       <button class="chip on" data-at="all">전체 보기</button>
-      <button class="chip" data-at="todo">아직 공부 안 함</button>
+      <button class="chip" data-at="todo">공부 안 함</button>
       <button class="chip" data-at="unknown">못 외운 것</button>
+      <button class="chip" data-at="star">중요</button>
       <button class="chip" data-at="word">단어만</button>
       <button class="chip" data-at="sentence">문장만</button>
     </div>
@@ -522,6 +532,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
         <button class="chip" data-st="unknown">못 외움</button>
         <button class="chip" data-st="known">외움</button>
         <button class="chip" data-st="new">공부 안 함</button>
+        <button class="chip" data-st="star">중요</button>
         <button class="chip" data-st="due">복습 예정</button>
       </div>
     </div>
@@ -657,7 +668,7 @@ service cloud.firestore {
    영어 공부 v7
    1단계 입력 → 2단계 보면서 외움/못외움 고르기 → 3단계 못 외운 것 복습
    ══════════════════════════════════════════════ */
-const APP='영어 공부', VERSION=7;
+const APP='K-English Mastery Studio', VERSION=8;
 const IDB_NAME='englishStudio', IDB_STORE='kv', DB_KEY='db';
 const LEGACY_KEY='dailyEnglishReviewLab_v1', DEVICE_KEY='englishStudio_device';
 
@@ -765,15 +776,16 @@ function stateTag(it){
   if(s==='unknown')return '<span class="tag bad">못 외움</span>';
   return '<span class="tag due">공부 안 함</span>';
 }
+function stateLabel(st){return st==='known'?'외움':st==='unknown'?'못 외움':'공부 안 함'}
 function dueText(it){
   const s=it.srs;
-  if(s.state==='unknown')return '못 외움 · 복습 대기';
-  if(s.state==='new')return '아직 공부 안 함';
-  if(!s.nextReview)return '외움';
+  if(s.state==='new')return '';
+  if(s.state==='unknown')return '복습 대기';
+  if(!s.nextReview)return '';
   const d=daysBetween(today(),s.nextReview);
-  if(d<=0)return '외움 · 오늘 다시 볼 차례';
-  if(d===1)return '외움 · 내일 다시 봅니다';
-  return `외움 · ${d}일 뒤에 다시 봅니다`;
+  if(d<=0)return '오늘 다시 볼 차례';
+  if(d===1)return '내일 다시 봅니다';
+  return `${d}일 뒤에 다시 봅니다`;
 }
 function typeName(it){
   if(it.type==='word')return it.subtype==='core'?'핵심 단어':'단어';
@@ -1063,7 +1075,7 @@ function upsertItem(draft,sessionId){
   }
   it={id:uid(),key:k,type:draft.type,subtype:draft.subtype,front:draft.front,
     meaning:draft.meaning||'',example:draft.example||'',translation:draft.translation||'',
-    note:draft.note||'',contrast:draft.contrast||'',linkedItemId:null,
+    note:draft.note||'',contrast:draft.contrast||'',linkedItemId:null,star:false,
     sessions:[sessionId],createdAt:now(),updatedAt:now(),srs:newSRS()};
   db.items.push(it);itemById.set(it.id,it);itemByKey.set(k,it);
   return it;
@@ -1654,6 +1666,7 @@ function normalizeDB(d){
         nextReview:known?(s.due||null):(s.state==='learning'?today():null)};
     }else it.srs={...newSRS(),...s};
     it.sessions=Array.isArray(it.sessions)?it.sessions:[];
+    it.star=!!it.star;
     if(!it.key)it.key=keyOf(it.type,it.front);
     if(!it.updatedAt)it.updatedAt=it.createdAt||now();
   }
@@ -1722,6 +1735,7 @@ function pickItem(a,b){
   if(!base.translation)base.translation=a.translation||b.translation||'';
   if(!base.example)base.example=a.example||b.example||'';
   if(!base.contrast)base.contrast=a.contrast||b.contrast||'';
+  base.star=!!(a.star||b.star);
   base.updatedAt=Math.max(a.updatedAt||0,b.updatedAt||0);
   return base;
 }
@@ -1802,6 +1816,8 @@ function cycleFS(){
 /* ══ 공통 : 학습 항목 상자 ══ */
 const ICON_OK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg>';
 const ICON_NO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const ICON_STAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3.4 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 17.2 6.7 20l1.1-6L3.4 9.8l6-.8z"/></svg>';
+const ICON_STAR_ON='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3.4 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 17.2 6.7 20l1.1-6L3.4 9.8l6-.8z"/></svg>';
 const ICON_SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 8.5a4.5 4.5 0 0 1 0 7"/><path d="M18.5 5.5a8.5 8.5 0 0 1 0 13"/></svg>';
 function itemDate(it){
   const s=(it.sessions||[]).map(sessionById).filter(Boolean).sort((a,b)=>a.date.localeCompare(b.date))[0];
@@ -1824,12 +1840,18 @@ function itemBoxHTML(it,opt){
     ${example?`<div class="ex en">${esc(example)}</div>`:''}
     ${!isW&&it.contrast?`<div class="notebox warn"><b>고치기 전 표현</b><span class="en">${esc(it.contrast)}</span></div>`:''}
     ${!isW&&it.note?`<div class="notebox"><b>메모</b>${esc(it.note)}</div>`:''}
-    <div class="meta"><span class="tag ${st==='known'?'ok':st==='unknown'?'bad':'due'}">${st==='known'?'외움':st==='unknown'?'못 외움':'공부 안 함'}</span>
-      <span class="tag">${esc(dueText(it))}</span></div>
+    <div class="meta">
+      <span class="tag ${st==='known'?'ok':st==='unknown'?'bad':'due'}">${stateLabel(st)}</span>
+      ${it.star?'<span class="tag star">중요</span>':''}
+      ${dueText(it)?`<span class="tag">${esc(dueText(it))}</span>`:''}
+    </div>
     <div class="markrow">
-      <button class="iconsq" data-speak="${it.id}" aria-label="영어 듣기">${ICON_SPK}</button>
       <button class="mark known${st==='known'?' on':''}" data-mark="${it.id}" data-st="known">${ICON_OK} 외움</button>
       <button class="mark unknown${st==='unknown'?' on':''}" data-mark="${it.id}" data-st="unknown">${ICON_NO} 못 외움</button>
+    </div>
+    <div class="markrow" style="margin-top:.4rem">
+      <button class="iconsq" data-speak="${it.id}" aria-label="영어 듣기">${ICON_SPK}</button>
+      <button class="mark star${it.star?' on':''}" data-star="${it.id}" aria-pressed="${it.star?'true':'false'}">${it.star?ICON_STAR_ON:ICON_STAR} 중요</button>
     </div>
   </div>`;
 }
@@ -1841,6 +1863,14 @@ function bindItemActions(root){
     haptic(8);
   });
   root.querySelectorAll('[data-edit]').forEach(b=>b.onclick=e=>{e.stopPropagation();editItem(b.dataset.edit)});
+  root.querySelectorAll('[data-star]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const it=itemById.get(b.dataset.star);if(!it)return;
+    it.star=!it.star;it.updatedAt=now();
+    haptic(it.star?[10,30,10]:8);
+    markDirty();refreshItem(it);updateBadges();
+    toast(it.star?'중요로 표시했습니다':'중요 표시를 해제했습니다');
+  });
   root.querySelectorAll('[data-mark]').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
     const it=itemById.get(b.dataset.mark);if(!it)return;
@@ -1870,6 +1900,7 @@ function counts(){
   return {items,todo,unknown,dueKnown,
     unknownWord:unknown.filter(i=>i.type==='word'),
     unknownSent:unknown.filter(i=>i.type==='sentence'),
+    star:items.filter(i=>i.star),
     known:items.filter(i=>i.srs.state==='known')};
 }
 function renderHome(){
@@ -1902,7 +1933,7 @@ function renderHome(){
     <div class="divider"></div>
     <div class="sm" style="font-weight:700;line-height:1.9">
       단어 ${ws.length}개 중 ${ws.filter(i=>i.srs.state==='known').length}개 외움<br>
-      문장 ${ss.length}개 중 ${ss.filter(i=>i.srs.state==='known').length}개 외움
+      문장 ${ss.length}개 중 ${ss.filter(i=>i.srs.state==='known').length}개 외움${c.star.length?`<br>중요로 고른 것 ${c.star.length}개`:''}
     </div>`;
   updateBadges();
 }
@@ -1924,6 +1955,7 @@ function passFilter(it){
   if(arcFilter==='all')return true;
   if(arcFilter==='todo')return it.srs.state==='new';
   if(arcFilter==='unknown')return it.srs.state==='unknown';
+  if(arcFilter==='star')return !!it.star;
   return it.type===arcFilter;
 }
 function updateStudyProgress(){
@@ -2047,9 +2079,10 @@ async function editItem(id){
     <input class="inp" id="edMean" value="${esc(isW?it.meaning:it.translation)}">
     <label class="f" style="margin-top:.6rem">${isW?'예문':'메모'}</label>
     <input class="inp ${isW?'en':''}" id="edExtra" value="${esc(isW?it.example:it.note)}" autocapitalize="off">
-    <div class="statusbox" style="margin-top:.7rem">${it.srs.state==='known'?'외움':it.srs.state==='unknown'?'못 외움':'공부 안 함'} · ${it.srs.reviewCount}번 확인 · ${esc(dueText(it))}</div>`;
+    <div class="statusbox" style="margin-top:.7rem">${stateLabel(it.srs.state)}${it.star?' · 중요':''} · ${it.srs.reviewCount}번 확인${dueText(it)?' · '+esc(dueText(it)):''}</div>`;
   const r=await openSheet({title:'항목 수정',body,actions:[
     {label:'저장',style:'acc',value:'save'},
+    {label:it.star?'중요 표시 해제':'중요로 표시',style:'ghost',value:'star'},
     {label:'공부 기록 지우기',style:'ghost',value:'reset'},
     {label:'이 항목 삭제',style:'dngr',value:'delete'}]});
   if(r==='save'){
@@ -2063,6 +2096,9 @@ async function editItem(id){
     const m=clean($('#edMean').value), x=$('#edExtra').value;
     if(isW){it.meaning=m;it.example=cleanEn(x)}else{it.translation=m;it.note=clean(x)}
     it.updatedAt=now();markDirty();rerenderCurrent();toast('저장했습니다');
+  }else if(r==='star'){
+    it.star=!it.star;it.updatedAt=now();markDirty();rerenderCurrent();
+    toast(it.star?'중요로 표시했습니다':'중요 표시를 해제했습니다');
   }else if(r==='reset'){
     it.srs=newSRS();it.updatedAt=now();markDirty();rerenderCurrent();toast('공부 기록을 지웠습니다');
   }else if(r==='delete'){
@@ -2093,8 +2129,14 @@ const SCOPES=[
    pick:c=>c.unknown},
   {id:'due',mark:'날',title:'오늘 다시 볼 것',desc:'외웠던 항목 중 복습일이 된 것',
    pick:c=>c.dueKnown},
-  {id:'todo',mark:'새',title:'아직 공부 안 한 것',desc:'2단계를 건너뛰고 바로 확인',
-   pick:c=>c.todo}
+  {id:'todo',mark:'새',title:'공부 안 함',desc:'2단계를 건너뛰고 바로 확인',
+   pick:c=>c.todo},
+  {id:'star',mark:'★',title:'중요 표시한 것',desc:'중요로 골라 둔 단어와 문장만',
+   pick:c=>c.star},
+  {id:'star-word',mark:'★단',title:'중요 표시한 단어',desc:'중요로 골라 둔 단어만',
+   pick:c=>c.star.filter(i=>i.type==='word')},
+  {id:'star-sentence',mark:'★문',title:'중요 표시한 문장',desc:'중요로 골라 둔 문장만',
+   pick:c=>c.star.filter(i=>i.type==='sentence')}
 ];
 function renderReviewSetup(){
   const c=counts();
@@ -2179,8 +2221,9 @@ function renderCard(){
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
     <div class="info"><b style="color:var(--ink);font-size:1rem">${rv.idx+1} / ${rv.queue.length}</b>
-      <span>${esc(rv.label||typeName(it))}</span>${rv.repeat[it.id]?'<span class="tag bad">다시</span>':''}</div>
+      <span>${esc(rv.label||typeName(it))}</span>${it.star?'<span class="tag star">중요</span>':''}${rv.repeat[it.id]?'<span class="tag bad">다시</span>':''}</div>
     <button class="iconbtn" id="rvSpeak" aria-label="영어 듣기">${ICON_SPK}</button>
+    <button class="iconbtn" id="rvStar" aria-label="중요 표시" style="color:${it.star?'var(--warn)':'var(--ink2)'}">${it.star?ICON_STAR_ON:ICON_STAR}</button>
     <button class="iconbtn" id="rvEdit" aria-label="항목 수정">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/></svg>
     </button>
@@ -2209,6 +2252,10 @@ function renderCard(){
   rv.revealed=false;
   $('#rvClose').onclick=()=>exitReview(true);
   $('#rvSpeak').onclick=()=>{speak(p.aEn?p.a:(p.qEn?p.q:it.front));haptic(8)};
+  $('#rvStar').onclick=()=>{
+    it.star=!it.star;it.updatedAt=now();markDirty();haptic(it.star?[10,30,10]:8);
+    toast(it.star?'중요로 표시했습니다':'중요 표시를 해제했습니다');renderCard();
+  };
   $('#rvEdit').onclick=async()=>{await editItem(it.id);renderCard()};
   $('#rvReveal').onclick=()=>toggleAnswer(p);
   $('#gKnown').onclick=()=>answerReview('known');
@@ -2335,12 +2382,14 @@ function bindReviewSetup(){
 let moreView='lib', libType='word', libState='all', libQuery='', libLimit=30;
 function libSource(){
   let list=liveItems().filter(i=>i.type===libType);
-  if(libState!=='all')list=libState==='due'?list.filter(isDueItem):list.filter(i=>i.srs.state===libState);
+  if(libState==='due')list=list.filter(isDueItem);
+  else if(libState==='star')list=list.filter(i=>!!i.star);
+  else if(libState!=='all')list=list.filter(i=>i.srs.state===libState);
   if(libQuery){
     const q=libQuery.toLowerCase();
     list=list.filter(i=>`${i.front} ${i.meaning} ${i.example} ${i.translation} ${i.note}`.toLowerCase().includes(q));
   }
-  const rank=x=>x.srs.state==='unknown'?0:x.srs.state==='new'?1:2;
+  const rank=x=>(x.star?0:4)+(x.srs.state==='unknown'?0:x.srs.state==='new'?1:2);
   return list.sort((a,b)=>rank(a)-rank(b)||itemDate(b).localeCompare(itemDate(a)));
 }
 function renderLib(reset){
@@ -2561,8 +2610,8 @@ async function runDiagnostics(){
 (function(){
   try{
     const icon='data:image/svg+xml;utf8,'+encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#1F6A57"/><text x="256" y="342" font-size="272" font-family="Georgia,serif" font-weight="700" fill="#F3F4F1" text-anchor="middle">E</text></svg>');
-    const m={name:'영어 공부',short_name:'영어',start_url:location.href.split('#')[0],
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#1F6A57"/><text x="256" y="342" font-size="272" font-family="Georgia,serif" font-weight="700" fill="#F3F4F1" text-anchor="middle">K</text></svg>');
+    const m={name:'K-English Mastery Studio',short_name:'K-English',start_url:location.href.split('#')[0],
       display:'standalone',background_color:'#F3F4F1',theme_color:'#F3F4F1',orientation:'portrait',
       icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any'}]};
     const l=document.createElement('link');l.rel='manifest';
