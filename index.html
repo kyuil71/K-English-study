@@ -197,10 +197,13 @@ html[data-theme="dark"] .mark.unknown.on{color:#1E0C08}
   overflow:hidden;box-shadow:var(--shadow-1)}
 .daycard.open{border-color:var(--accent)}
 .dayhead{display:flex;align-items:center;gap:.6rem;padding:.9rem;width:100%;border:0;background:transparent;text-align:left}
-.dayhead .d{font-size:.82rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
-.dayhead .ti{font-size:1.1rem;font-weight:800;margin-top:.1rem;letter-spacing:-.01em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dayhead .cnt{font-size:.85rem;color:var(--muted);font-weight:700;margin-top:.2rem}
+.dayhead .d{font-size:1.15rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;line-height:1.3}
+.dayhead .ti{font-size:1.25rem;font-weight:800;margin-top:.15rem;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.dayhead .cnt{font-size:.92rem;color:var(--muted);font-weight:700;margin-top:.3rem}
+.dayhead{padding:1.05rem .95rem}
+.dayhead .chev{width:1.6rem;height:1.6rem}
 .dayhead .chev{margin-left:auto;color:var(--muted);transition:transform .2s;flex:none}
 .daycard.open .chev{transform:rotate(90deg)}
 .daybody{display:none;padding:0 .8rem .9rem;border-top:2px solid var(--line2)}
@@ -514,6 +517,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
         <div class="av" id="avatar">?</div>
         <div class="t"><b id="userName">로그인하지 않았습니다</b><span id="userMail">로그인하면 휴대폰과 컴퓨터에서 같은 기록을 씁니다</span></div>
       </div>
+      <div id="cloudWarn" class="hide" style="margin-top:.6rem"></div>
       <div class="btnrow" style="margin-top:.6rem">
         <button class="btn acc" id="btnLogin">Google 로그인</button>
         <button class="btn ghost hide" id="btnLogout">로그아웃</button>
@@ -528,6 +532,9 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
         <button class="btn ghost" id="btnPull" disabled>내려받기</button>
       </div>
       <div class="statusbox" id="syncStatus">로그인을 기다리는 중입니다.</div>
+      <button class="btn ghost full" id="btnDiag" style="margin-top:.6rem">연결 진단하기</button>
+      <div id="diagBox" class="hide" style="margin-top:.6rem;border:2px solid var(--line);border-radius:.8rem;padding:.2rem .8rem"></div>
+      <div id="diagFix" class="hide" style="margin-top:.6rem"></div>
       <details class="help" id="domainHelp">
         <summary>로그인이 안 될 때</summary>
         <div class="sm muted" style="margin-top:.5rem;line-height:1.7">Firebase 콘솔 → Authentication → Settings → 승인된 도메인에 아래 주소가 있어야 합니다.</div>
@@ -663,7 +670,12 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function hasHangul(s){return /[가-힣]/.test(String(s||''))}
 function fmtTime(v){try{return new Date(v).toLocaleString('ko-KR',{dateStyle:'medium',timeStyle:'short'})}catch(e){return String(v||'')}}
-function deviceId(){let d=localStorage.getItem(DEVICE_KEY);if(!d){d=uid();localStorage.setItem(DEVICE_KEY,d)}return d}
+const memStore={};
+function lsGet(k){try{const v=localStorage.getItem(k);return v==null?(k in memStore?memStore[k]:null):v}catch(e){return k in memStore?memStore[k]:null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}memStore[k]=v}
+function ssSet(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+function ssDel(k){try{sessionStorage.removeItem(k)}catch(e){}}
+function deviceId(){let d=lsGet(DEVICE_KEY);if(!d){d=uid();lsSet(DEVICE_KEY,d)}return d}
 const DEVICE=deviceId();
 function mq(q){try{return window.matchMedia(q)}catch(e){return{matches:false,addEventListener(){},addListener(){}}}}
 function onMQ(q,fn){const m=mq(q);if(m.addEventListener)m.addEventListener('change',fn);else if(m.addListener)m.addListener(fn)}
@@ -689,7 +701,7 @@ async function kvGet(key){
       const r=d.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get(key);
       r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
     });
-  }catch(e){const raw=localStorage.getItem('es_'+key);return raw?JSON.parse(raw):undefined}
+  }catch(e){try{const raw=lsGet('es_'+key);return raw?JSON.parse(raw):undefined}catch(e2){return undefined}}
 }
 async function kvSet(key,val){
   try{
@@ -701,7 +713,7 @@ async function kvSet(key,val){
     });
     return {ok:true,where:'idb'};
   }catch(e){
-    try{localStorage.setItem('es_'+key,JSON.stringify(val));return {ok:true,where:'ls'}}
+    try{lsSet('es_'+key,JSON.stringify(val));return {ok:true,where:'ls'}}
     catch(e2){return {ok:false,error:e2}}
   }
 }
@@ -845,6 +857,40 @@ function parseWordRow(line){
   const ex=cleanEn(cols.slice(2).join(' '));
   return {term,meaning,example:isEnSentence(ex)?ex:''};
 }
+/* 표가 한 줄로 뭉쳐 들어온 경우를 단어/뜻/예문으로 분해합니다.
+   예) "Word 뜻 Example sentence deadline 마감일 We need to meet the deadline. delay 지연 ..." */
+function splitWordBlob(line){
+  let s=clean(line);
+  if(!s)return null;
+  s=s.replace(/^\s*(?:핵심\s*단어|주요\s*단어|오늘의\s*단어|어휘)\s*\d*\s*개?\s*/i,'');
+  s=s.replace(/^\s*(?:Word|Words|단어|표현)\s*[|\/]?\s*(?:뜻|의미|Meaning)\s*[|\/]?\s*(?:Example\s*sentences?|Examples?|예문)\s*/i,'');
+  if(!hasHangul(s)||!/[A-Za-z]/.test(s))return null;
+  const toks=s.split(/\s+/).filter(Boolean);
+  if(toks.length<6)return null;
+  const isKo=t=>/[가-힣]/.test(t);
+  const isEn=t=>/[A-Za-z]/.test(t)&&!isKo(t);
+  const rows=[];
+  let i=0;
+  while(i<toks.length){
+    const term=[];
+    while(i<toks.length&&!isKo(toks[i])&&term.length<=4){term.push(toks[i]);i++}
+    if(!term.length||i>=toks.length)break;
+    const termStr=clean(term.join(' '));
+    if(!looksLikeTerm(termStr))break;
+    const mean=[];
+    while(i<toks.length&&!isEn(toks[i])){mean.push(toks[i]);i++}
+    const meanStr=clean(mean.join(' ')).replace(/^[\/,·\-\s]+|[\/,·\-\s]+$/g,'');
+    if(!meanStr||!hasHangul(meanStr))break;
+    const ex=[];
+    while(i<toks.length){
+      ex.push(toks[i]);i++;
+      if(/[.!?]$/.test(ex[ex.length-1]))break;
+    }
+    const exStr=cleanEn(ex.join(' '));
+    rows.push({term:termStr,meaning:meanStr,example:isEnSentence(exStr)?exStr:''});
+  }
+  return rows.length>=2?rows:null;
+}
 function parseArrowSeq(line){
   const x=clean(line);
   const m=x.match(/([A-Za-z][A-Za-z' -]*(?:\s*→\s*[A-Za-z][A-Za-z' -]*){1,})/);
@@ -891,13 +937,22 @@ function parseContent(text){
     if(isTableSep(line))continue;
     const plain=clean(line);
     if(!plain)continue;
-    if((/\bword\b/i.test(plain)&&/(뜻|meaning)/i.test(plain)&&/(example|예문)/i.test(plain))
-      ||(/^단어\b/.test(plain)&&/(뜻|예문)/.test(plain)))continue;
+    if(plain.length<60&&((/\bword\b/i.test(plain)&&/(뜻|meaning)/i.test(plain)&&/(example|예문)/i.test(plain))
+      ||(/^단어\b/.test(plain)&&/(뜻|예문)/.test(plain))))continue;
 
     const row=parseWordRow(line);
     if(row){
       addWord(row.term,row.meaning,row.example);
       if(row.example)addSent(row.example,'vocab-example',{linkWord:row.term});
+      pendingWrong='';continue;
+    }
+    const blob=splitWordBlob(line);
+    if(blob){
+      if(!cur||cur.title!=='핵심 단어')startChapter('핵심 단어','words');
+      for(const r of blob){
+        addWord(r.term,r.meaning,r.example);
+        if(r.example)addSent(r.example,'vocab-example',{linkWord:r.term});
+      }
       pendingWrong='';continue;
     }
     const seq=parseArrowSeq(line);
@@ -1239,6 +1294,7 @@ function updateAuthUI(){
   if(on&&currentUser.photoURL)av.innerHTML=`<img src="${esc(currentUser.photoURL)}" alt="">`;
   else av.textContent=on?(currentUser.displayName||'U').trim().charAt(0).toUpperCase():'?';
   $('#swAuto').checked=!!db.settings.autoSync;
+  if(typeof renderCloudWarn==='function')renderCloudWarn();
 }
 function explainErr(e){
   const c=String((e&&e.code)||'');
@@ -1246,7 +1302,9 @@ function explainErr(e){
   if(c.includes('popup-blocked')||c.includes('popup-closed'))return '로그인 창이 닫혔습니다. 다시 시도해 주세요.';
   if(c.includes('network-request-failed'))return '네트워크에 연결되어 있지 않습니다. 연결되면 자동으로 다시 시도합니다.';
   if(c.includes('permission-denied'))return 'Firestore 보안 규칙에서 접근이 막혔습니다. 아래 규칙 예시를 콘솔에 적용해 주세요.';
-  if(c.includes('unavailable'))return 'Firebase에 연결하지 못했습니다. 잠시 뒤 다시 시도합니다.';
+  if(c.includes('unavailable'))return 'Firebase 서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.';
+  if(c.includes('not-found')||c.includes('failed-precondition'))return 'Firebase 콘솔에서 Firestore Database를 아직 만들지 않았습니다. Firestore Database → 데이터베이스 만들기를 먼저 해 주세요.';
+  if(c.includes('resource-exhausted'))return 'Firebase 무료 사용량을 넘었습니다. 내일 다시 시도하거나 요금제를 확인해 주세요.';
   if(c.includes('operation-not-allowed'))return 'Firebase 콘솔에서 Google 로그인 제공업체를 켜 주세요.';
   return (e&&e.message)||'알 수 없는 오류입니다.';
 }
@@ -1277,8 +1335,8 @@ function splitChunks(str){
 async function initAuth(){
   $('#curHost').textContent=location.origin;
   if(location.protocol==='file:'){
-    setSync('이 파일을 file:// 로 직접 열면 Google 로그인이 동작하지 않습니다. Firebase Hosting이나 다른 HTTPS 주소에 올려 주세요.\n로그인 없이도 학습 기록은 이 기기에 안전하게 저장됩니다.','bad');
-    $('#btnLogin').disabled=true;$('#domainHelp').open=true;
+    setSync('이 파일을 컴퓨터에서 그대로 열었습니다(file://).\n구글 로그인은 인터넷 주소(https://)에서만 됩니다. 아래 「연결 진단하기」를 눌러 해결 방법을 확인해 주세요.\n\n로그인이 없어도 학습 내용과 외움 표시는 이 기기에 정상 저장됩니다.','bad');
+    $('#btnLogin').disabled=true;
     return;
   }
   try{
@@ -1292,11 +1350,13 @@ async function initAuth(){
     const r=await FB.getRedirectResult(FB.auth);
     if(r&&r.user)toast(`${r.user.displayName||'Google 사용자'}님 로그인했습니다`);
   }catch(e){setSync('로그인 처리 중 문제가 있었습니다: '+explainErr(e),'bad')}
-  finally{sessionStorage.removeItem('es_loginPending')}
+  finally{ssDel('es_loginPending')}
 
   FB.onAuthStateChanged(FB.auth,async user=>{
     currentUser=user||null;syncReady=false;cloudBusy=false;updateAuthUI();
-    if(!user){setSync('로그인하지 않았습니다. 학습 기록은 이 기기에만 저장됩니다.');$('#snapList').innerHTML='<div class="xs muted">로그인하면 표시됩니다.</div>';return}
+    if(!user){
+      setSync('아직 로그인하지 않았습니다.\n학습 내용과 외움 표시는 이 기기에 자동으로 저장되고 있습니다. 다른 기기에서도 쓰려면 위의 Google 로그인을 눌러 주세요.');
+      $('#snapList').innerHTML='<div class="sm muted">로그인하면 표시됩니다.</div>';return}
     setSync('클라우드 상태를 확인하는 중입니다...','');
     await reconcileOnLogin();
     updateAuthUI();
@@ -1315,7 +1375,7 @@ async function login(){
     const provider=new FB.GoogleAuthProvider();
     provider.setCustomParameters({prompt:'select_account'});
     if(useRedirect()){
-      sessionStorage.setItem('es_loginPending','1');
+      ssSet('es_loginPending','1');
       await FB.signInWithRedirect(FB.auth,provider);
       return;
     }
@@ -1324,7 +1384,7 @@ async function login(){
     }catch(e){
       const c=String(e.code||'');
       if(c.includes('popup-blocked')||c.includes('popup-closed')||c.includes('cancelled-popup')){
-        sessionStorage.setItem('es_loginPending','1');
+        ssSet('es_loginPending','1');
         await FB.signInWithRedirect(FB.auth,provider);return;
       }
       throw e;
@@ -1413,6 +1473,15 @@ function scheduleCloudPush(){
   if(!currentUser||!syncReady||!db.settings.autoSync)return;
   clearTimeout(pushTimer);
   pushTimer=setTimeout(()=>pushCloud({silent:true}),2500);
+}
+/* 진단: 지금 자동 저장이 되는 상태인지 한 줄로 알려 줍니다 */
+function cloudReadyReason(){
+  if(location.protocol==='file:')return '컴퓨터에서 파일을 그대로 열어서 구글 로그인이 안 됩니다';
+  if(!FB)return 'Firebase 준비가 아직 안 됐습니다';
+  if(!currentUser)return '구글 로그인을 하지 않았습니다';
+  if(!db.settings.autoSync)return '자동 저장이 꺼져 있습니다';
+  if(!syncReady)return '클라우드와 맞추는 중입니다';
+  return '';
 }
 async function pushCloud({silent,force}={}){
   if(!currentUser){if(!silent)toast('먼저 Google 로그인을 해 주세요.',true);return false}
@@ -1650,7 +1719,7 @@ function mergeDB(local,remote){
 }
 
 /* ── 탭 ── */
-let curTab='home';
+let curTab='home', reviewing=false, rvDir='auto';
 function switchTab(name){
   if(reviewing&&name!=='review')exitReview(false);
   curTab=name;
@@ -1837,7 +1906,6 @@ function renderArchive(){
     const g=$('#goAdd');if(g)g.onclick=()=>switchTab('add');
     return;
   }
-  if(!arcOpen.size)arcOpen.add(list[0].id);
   $('#arcList').innerHTML=list.map(s=>{
     const its=sessionItems(s);
     const todo=its.filter(i=>i.srs.state==='new').length;
@@ -1968,7 +2036,7 @@ function rerenderCurrent(){
 }
 
 /* ══ 3단계 : 복습 ══ */
-let reviewing=false, rvDir='auto';
+
 let rv={queue:[],idx:0,base:0,repeat:{},revealed:false,dir:'auto',label:'',counts:{known:0,unknown:0,skip:0}};
 const reviewSetupHTML=$('#review').innerHTML;
 
@@ -2250,7 +2318,15 @@ function renderMore(){
   $('#moreSettings').classList.toggle('hide',moreView!=='settings');
   if(moreView==='lib')renderLib(true);
   if(moreView==='settings')renderSettings();
-  if(moreView==='sync')renderSnapshots();
+  if(moreView==='sync'){renderSnapshots();renderCloudWarn()}
+}
+function renderCloudWarn(){
+  const el=$('#cloudWarn');if(!el)return;
+  const why=typeof cloudReadyReason==='function'?cloudReadyReason():'';
+  el.classList.toggle('hide',!why);
+  if(why)el.innerHTML=`<div class="notice" style="background:var(--warn-soft);border-color:var(--warn);color:var(--warn)">
+    <b>클라우드 자동 저장이 꺼져 있습니다</b><br>${esc(why)}.<br>
+    학습 내용과 외움 표시는 이 기기에 정상 저장되고 있습니다. 아래 「연결 진단하기」에서 해결 방법을 볼 수 있습니다.</div>`;
 }
 function renderSettings(){
   $('#swSpeak').checked=!!db.settings.speakAnswer;
@@ -2324,6 +2400,7 @@ $('#btnWipe').onclick=async()=>{
   const keep=db.settings;db=blankDB();db.settings=keep;reindex();
   await persistNow();dirtyCloud=false;toast('삭제했습니다');switchTab('home');
 };
+$('#btnDiag').onclick=runDiagnostics;
 $('#btnLogin').onclick=login;
 $('#btnLogout').onclick=logout;
 $('#btnPush').onclick=()=>pushCloud({silent:false});
@@ -2332,6 +2409,109 @@ $('#btnCopyHost').onclick=async()=>{
   try{await navigator.clipboard.writeText(location.origin);toast('주소를 복사했습니다')}
   catch(e){toast(location.hostname)}
 };
+
+/* ══ 연결 진단 ══ */
+function diagRow(state,title,msg){
+  const color=state==='ok'?'var(--accent)':state==='no'?'var(--danger)':'var(--muted)';
+  const mark=state==='ok'?'&#10003;':state==='no'?'&#10007;':'&#8230;';
+  return `<div class="lrow"><div style="width:1.7rem;flex:none;font-size:1.2rem;font-weight:800;color:${color};text-align:center">${mark}</div>
+    <div class="m"><b>${esc(title)}</b><span>${esc(msg)}</span></div></div>`;
+}
+async function runDiagnostics(){
+  const box=$('#diagBox'), fix=$('#diagFix');
+  box.classList.remove('hide');fix.classList.add('hide');fix.innerHTML='';
+  const rows=[];
+  const draw=()=>{box.innerHTML=rows.join('')};
+  const add=(st,t,m)=>{rows.push(diagRow(st,t,m));draw()};
+  const problems=[];
+  draw();
+
+  /* 1. 실행 위치 */
+  if(location.protocol==='file:'){
+    add('no','실행 위치','컴퓨터에 저장된 파일을 그대로 열었습니다 (file://)');
+    problems.push('file');
+  }else if(location.protocol!=='https:'&&location.hostname!=='localhost'){
+    add('no','실행 위치',location.protocol+'// 주소에서는 구글 로그인이 막힐 수 있습니다');
+    problems.push('host');
+  }else{
+    add('ok','실행 위치',location.origin);
+  }
+
+  /* 2. 인터넷 */
+  if(navigator.onLine===false){add('no','인터넷 연결','오프라인 상태입니다');problems.push('net')}
+  else add('ok','인터넷 연결','연결되어 있습니다');
+
+  /* 3. Firebase 준비 */
+  if(location.protocol==='file:'){
+    add('no','Firebase 준비','실행 위치 문제로 시도하지 않았습니다');
+  }else{
+    try{await loadFirebase();add('ok','Firebase 준비','정상적으로 불러왔습니다')}
+    catch(e){add('no','Firebase 준비','불러오지 못했습니다 · '+((e&&e.message)||''));problems.push('sdk')}
+  }
+
+  /* 4. 로그인 */
+  if(currentUser)add('ok','구글 로그인',currentUser.email||currentUser.displayName||'로그인됨');
+  else{add('no','구글 로그인','로그인하지 않았습니다');problems.push('login')}
+
+  /* 5~6. Firestore 읽기/쓰기 */
+  if(currentUser&&FB){
+    try{
+      await FB.getDoc(docRef('meta'));
+      add('ok','저장소 읽기','정상입니다');
+    }catch(e){add('no','저장소 읽기',explainErr(e));problems.push('read')}
+    try{
+      await FB.setDoc(docRef('_diag'),{at:new Date().toISOString(),device:DEVICE});
+      await FB.deleteDoc(docRef('_diag'));
+      add('ok','저장소 쓰기','정상입니다');
+    }catch(e){add('no','저장소 쓰기',explainErr(e));problems.push('write')}
+  }else{
+    add('no','저장소 읽기·쓰기','로그인 후에 확인할 수 있습니다');
+  }
+
+  /* 7. 자동 저장 설정 */
+  if(db.settings.autoSync)add('ok','자동 저장 설정','켜져 있습니다');
+  else{add('no','자동 저장 설정','꺼져 있습니다');problems.push('auto')}
+
+  /* 8. 이 기기 저장 */
+  add(idbFailed?'wait':'ok','이 기기 저장',idbFailed?'제한 모드로 저장 중입니다':'정상 저장되고 있습니다');
+
+  /* 해결 방법 */
+  const tips=[];
+  if(problems.includes('file'))tips.push({
+    t:'파일을 인터넷 주소에 올려 주세요',
+    d:'구글 로그인은 보안 때문에 https:// 주소에서만 됩니다. 가장 쉬운 방법은 Firebase Hosting입니다.\n1) firebase.google.com 접속 → 내 프로젝트(prototype-kyuil) 선택\n2) 왼쪽 메뉴에서 Hosting → 시작하기\n3) 이 HTML 파일을 index.html 이라는 이름으로 올리기\n4) 안내되는 주소(...web.app)로 접속\n\n그때까지도 학습 내용은 이 기기에 그대로 저장됩니다.'});
+  if(problems.includes('host'))tips.push({
+    t:'승인된 도메인에 지금 주소를 추가해 주세요',
+    d:'Firebase 콘솔 → Authentication → Settings → 승인된 도메인에 아래 주소를 추가하세요.\n\n'+location.hostname});
+  if(problems.includes('login'))tips.push({
+    t:'구글 로그인을 눌러 주세요',
+    d:'위쪽의 「Google 로그인」 버튼을 누르면 클라우드 자동 저장이 시작됩니다. 로그인하지 않아도 이 기기에는 계속 저장되니 안심하셔도 됩니다.'});
+  if(problems.includes('read')||problems.includes('write'))tips.push({
+    t:'Firebase 설정을 확인해 주세요',
+    d:'1) Firestore Database가 만들어져 있는지\n2) 규칙(Rules)에 아래 내용이 적용되어 있는지 확인해 주세요.\n\nrules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /users/{userId}/{document=**} {\n      allow read, write: if request.auth != null\n                         && request.auth.uid == userId;\n    }\n  }\n}'});
+  if(problems.includes('auto'))tips.push({
+    t:'자동 저장을 켜 주세요',
+    d:'위쪽 「자동 저장」 스위치를 켜면 표시할 때마다 클라우드에 올라갑니다.'});
+  if(problems.includes('sdk'))tips.push({
+    t:'인터넷 연결이나 보안 프로그램을 확인해 주세요',
+    d:'Firebase 프로그램을 인터넷에서 불러오지 못했습니다. 회사 네트워크나 보안 프로그램이 막고 있을 수 있습니다. 다른 인터넷(휴대폰 데이터 등)에서 한 번 시도해 보세요.'});
+  if(problems.includes('net'))tips.push({
+    t:'인터넷에 연결해 주세요',
+    d:'연결되면 저장하지 못했던 내용을 자동으로 다시 올립니다.'});
+
+  if(!tips.length){
+    fix.classList.remove('hide');
+    fix.innerHTML='<div class="notice">모든 항목이 정상입니다. 자동 저장이 켜져 있고 클라우드에 잘 올라가고 있습니다.</div>';
+  }else{
+    fix.classList.remove('hide');
+    fix.innerHTML='<div style="font-size:1.05rem;font-weight:800;margin:.3rem 0 .5rem">해결 방법</div>'+
+      tips.map((x,i)=>`<div class="card" style="margin-bottom:.5rem;background:var(--surface2)">
+        <div style="font-size:1rem;font-weight:800;margin-bottom:.35rem">${i+1}. ${esc(x.t)}</div>
+        <div class="sm" style="white-space:pre-wrap;line-height:1.75;font-weight:600">${esc(x.d)}</div></div>`).join('');
+  }
+  const why=cloudReadyReason();
+  toast(why?('자동 저장 안 됨 · '+why):'모두 정상입니다',!!why);
+}
 
 /* PWA 매니페스트 */
 (function(){
@@ -2393,13 +2573,21 @@ To get the project back on track, we're going to allocate more resources next we
 
 /* ══ 시작 ══ */
 async function boot(){
+  try{await bootInner()}
+  catch(e){
+    setDot('error','시작 중 오류');
+    try{toast('시작 중 문제가 생겼습니다: '+((e&&e.message)||''),true)}catch(e2){}
+    console.error(e);
+  }
+}
+async function bootInner(){
   let stored=null;
   try{stored=await kvGet(DB_KEY)}catch(e){}
   if(stored&&Array.isArray(stored.items)&&Array.isArray(stored.sessions)){
     db=normalizeDB(stored);
   }else{
     let legacy=null;
-    try{const raw=localStorage.getItem(LEGACY_KEY);if(raw)legacy=JSON.parse(raw)}catch(e){}
+    try{const raw=lsGet(LEGACY_KEY);if(raw)legacy=JSON.parse(raw)}catch(e){}
     if(legacy&&Array.isArray(legacy.sessions)&&legacy.sessions.length){
       db=migrateLegacy(legacy);await persistNow();
       setTimeout(()=>toast(`이전 기록 ${db.sessions.length}일치를 옮겨 왔습니다`),700);
