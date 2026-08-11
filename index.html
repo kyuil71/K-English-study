@@ -67,7 +67,7 @@ header{position:sticky;top:0;z-index:40;background:var(--paper);
 
 /* ── 레이아웃 ── */
 main{max-width:60rem;margin:0 auto;
-  padding:var(--pad) max(var(--pad),var(--sar)) calc(1.2rem + var(--navh) + var(--sab)) max(var(--pad),var(--sal))}
+  padding:var(--pad) max(var(--pad),var(--sar)) calc(2rem + var(--sab)) max(var(--pad),var(--sal))}
 .panel{display:none}
 .panel.active{display:block;animation:fade .16s ease}
 @keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
@@ -215,18 +215,25 @@ html[data-theme="dark"] .mark.unknown.on{color:#1E0C08}
   padding:.5rem 0;border-bottom:1px solid var(--line2)}
 
 /* ── 하단 탭 ── */
-nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:repeat(5,1fr);
-  background:var(--surface);background:color-mix(in srgb,var(--surface) 95%,transparent);
+nav.tabbar{position:sticky;top:calc(var(--sat) + var(--headh));z-index:45;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:.2rem;
+  background:var(--paper);background:color-mix(in srgb,var(--paper) 94%,transparent);
   backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
-  border-top:2px solid var(--line);padding-bottom:var(--sab);padding-left:var(--sal);padding-right:var(--sar)}
-nav.tabbar button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:.15rem;min-height:var(--navh);color:var(--muted);font-size:.76rem;
-  font-weight:800;position:relative;padding:0 .1rem}
-nav.tabbar button svg{width:1.5rem;height:1.5rem}
-nav.tabbar button.on{color:var(--accent)}
-nav.tabbar .badge{position:absolute;top:.5rem;left:calc(50% + .45rem);background:var(--danger);color:#fff;
-  font-size:.66rem;font-weight:800;min-width:1.1rem;height:1.1rem;border-radius:.55rem;display:grid;
-  place-items:center;padding:0 .25rem;font-variant-numeric:tabular-nums}
+  border-bottom:2px solid var(--line);padding:.3rem max(.3rem,var(--sar)) .35rem max(.3rem,var(--sal))}
+nav.tabbar button{border:0;background:transparent;border-radius:.7rem;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.1rem;min-height:var(--navh);color:var(--muted);
+  font-size:.78rem;font-weight:800;position:relative;padding:.15rem .1rem;transition:background .15s}
+nav.tabbar button svg{width:1.45rem;height:1.45rem}
+nav.tabbar button.on{color:var(--accent);background:var(--accent-soft)}
+nav.tabbar button:active{background:var(--line2)}
+nav.tabbar .badge{position:absolute;top:.25rem;left:calc(50% + .5rem);background:var(--danger);color:#fff;
+  font-size:.66rem;font-weight:800;min-width:1.15rem;height:1.15rem;border-radius:.6rem;display:grid;
+  place-items:center;padding:0 .25rem;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--paper)}
+/* 폭이 넉넉하면 아이콘과 글자를 가로로 */
+@media (min-width:430px){
+  nav.tabbar button{flex-direction:row;gap:.35rem;font-size:.88rem;min-height:3rem}
+  nav.tabbar .badge{position:static;margin-left:.1rem;box-shadow:none}
+}
 
 /* ── 복습 전체화면 ── */
 body.reviewing header,body.reviewing nav.tabbar{display:none}
@@ -277,7 +284,7 @@ html[data-theme="dark"] .rvgrade .unknown{color:#1E0C08}
 .sheet .shead p{margin:.4rem 0 0;font-size:.95rem;font-weight:600;color:var(--muted);line-height:1.65;white-space:pre-wrap}
 .sheet .sbody{padding:.8rem 1rem .2rem;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sheet .sfoot{padding:.7rem 1rem 1rem;display:grid;gap:.45rem;flex:none}
-#toast{position:fixed;left:50%;bottom:calc(var(--navh) + var(--sab) + .7rem);transform:translate(-50%,.7rem);
+#toast{position:fixed;left:50%;bottom:calc(var(--sab) + 1.2rem);transform:translate(-50%,.7rem);
   z-index:100;background:var(--ink);color:var(--paper);padding:.7rem 1rem;border-radius:.8rem;font-size:.95rem;
   font-weight:800;box-shadow:var(--shadow-2);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
   max-width:88vw;text-align:center}
@@ -327,7 +334,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
   .markrow{flex-wrap:wrap}
 }
 @media (max-height:700px){
-  :root{--headh:2.9rem;--navh:3.8rem}
+  :root{--headh:2.9rem;--navh:3.4rem}
   textarea{min-height:28vh;min-height:28dvh}
   .rvcard{padding:.8rem}
   .rvgrade .btn{min-height:3.2rem}
@@ -338,14 +345,9 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
   .rvcard{padding:.7rem .9rem}
 }
 @media (min-width:760px){
-  :root{--navh:0px;--headh:3.6rem;--pad:1.2rem;--gap:.85rem}
-  nav.tabbar{position:sticky;top:calc(var(--headh) + var(--sat));bottom:auto;
-    grid-template-columns:repeat(5,auto);justify-content:center;gap:.3rem;border-top:0;
-    border-bottom:2px solid var(--line);padding:.4rem 0;
-    background:var(--paper);background:color-mix(in srgb,var(--paper) 92%,transparent)}
-  nav.tabbar button{flex-direction:row;gap:.4rem;min-height:2.8rem;font-size:.95rem;padding:0 1rem;border-radius:.6rem}
-  nav.tabbar button.on{background:var(--accent-soft)}
-  nav.tabbar .badge{position:static;margin-left:.15rem}
+  :root{--headh:3.6rem;--pad:1.2rem;--gap:.85rem}
+  nav.tabbar{grid-template-columns:repeat(5,auto);justify-content:center;gap:.3rem;padding:.4rem 0}
+  nav.tabbar button{min-height:2.9rem;font-size:1rem;padding:0 1.2rem}
   main{padding-bottom:3rem}
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
   .step{margin-bottom:0}
@@ -381,6 +383,24 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
   </div>
 </header>
 
+<nav class="tabbar" id="tabbar">
+  <button data-tab="home" class="on">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1z"/></svg><span>홈</span>
+  </button>
+  <button data-tab="add">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>입력</span>
+  </button>
+  <button data-tab="study">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M10 4h4.5A1.5 1.5 0 0 1 16 5.5v13a1.5 1.5 0 0 1-1.5 1.5H10"/><path d="m17.5 5.2 2.2 13.1"/></svg><span>학습기록</span><span class="badge hide" id="studyBadge">0</span>
+  </button>
+  <button data-tab="review">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 1 1-2.6-5.4"/><path d="M20 4v4.5h-4.5"/></svg><span>복습</span><span class="badge hide" id="tabBadge">0</span>
+  </button>
+  <button data-tab="more">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg><span>더보기</span>
+  </button>
+</nav>
+
 <main>
 
 <!-- ══ 홈 : 3단계 ══ -->
@@ -394,8 +414,8 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
     </button>
 
     <button class="step" id="step2">
-      <div class="top"><div class="num">2</div><div class="h"><b>보면서 공부하기</b><span>단어·문장마다 외움 / 못 외움 표시</span></div></div>
-      <div class="big" id="s2n">0<small>개 표시 안 함</small></div>
+      <div class="top"><div class="num">2</div><div class="h"><b>보면서 공부하기</b><span>단어·문장마다 외움 / 못 외움 고르기</span></div></div>
+      <div class="big" id="s2n">0<small>개 공부 안 함</small></div>
       <div class="bar"><i id="s2bar"></i></div>
       <div class="go"><span id="s2go">학습 기록 열기</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
@@ -435,7 +455,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
       <button class="btn ghost sm" id="btnManual">직접 추가</button>
     </div>
   </div>
-  <div class="notice">같은 날짜에 다시 저장해도 이미 표시한 외움 / 못 외움은 그대로 유지됩니다.</div>
+  <div class="notice">같은 날짜에 다시 저장해도 이미 고른 외움 / 못 외움은 그대로 유지됩니다.</div>
 </section>
 
 <!-- ══ 2단계 : 학습 기록 ══ -->
@@ -452,7 +472,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
     </div>
     <div class="chips" id="arcChips">
       <button class="chip on" data-at="all">전체 보기</button>
-      <button class="chip" data-at="todo">아직 표시 안 함</button>
+      <button class="chip" data-at="todo">아직 공부 안 함</button>
       <button class="chip" data-at="unknown">못 외운 것</button>
       <button class="chip" data-at="word">단어만</button>
       <button class="chip" data-at="sentence">문장만</button>
@@ -501,7 +521,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
         <button class="chip on" data-st="all">전체</button>
         <button class="chip" data-st="unknown">못 외움</button>
         <button class="chip" data-st="known">외움</button>
-        <button class="chip" data-st="new">표시 안 함</button>
+        <button class="chip" data-st="new">공부 안 함</button>
         <button class="chip" data-st="due">복습 예정</button>
       </div>
     </div>
@@ -524,7 +544,7 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
       </div>
       <div class="divider"></div>
       <div class="lrow">
-        <div class="m"><b>자동 저장</b><span>외움 표시나 학습 저장 뒤 자동으로 올립니다</span></div>
+        <div class="m"><b>자동 저장</b><span>공부 기록과 학습 내용을 자동으로 올립니다</span></div>
         <label class="sw"><input type="checkbox" id="swAuto" checked><i></i></label>
       </div>
       <div class="btnrow" style="margin-top:.6rem">
@@ -589,7 +609,7 @@ service cloud.firestore {
         <label class="sw"><input type="checkbox" id="swSpeak"><i></i></label>
       </div>
       <div class="lrow">
-        <div class="m"><b>진동 피드백</b><span>표시할 때 짧게 울립니다</span></div>
+        <div class="m"><b>진동 피드백</b><span>버튼을 누를 때 짧게 울립니다</span></div>
         <label class="sw"><input type="checkbox" id="swHaptic" checked><i></i></label>
       </div>
       <div class="lrow">
@@ -620,23 +640,7 @@ service cloud.firestore {
 
 </main>
 
-<nav class="tabbar" id="tabbar">
-  <button data-tab="home" class="on">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1z"/></svg><span>홈</span>
-  </button>
-  <button data-tab="add">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>입력</span>
-  </button>
-  <button data-tab="study">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M10 4h4.5A1.5 1.5 0 0 1 16 5.5v13a1.5 1.5 0 0 1-1.5 1.5H10"/><path d="m17.5 5.2 2.2 13.1"/></svg><span>학습기록</span><span class="badge hide" id="studyBadge">0</span>
-  </button>
-  <button data-tab="review">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 1 1-2.6-5.4"/><path d="M20 4v4.5h-4.5"/></svg><span>복습</span><span class="badge hide" id="tabBadge">0</span>
-  </button>
-  <button data-tab="more">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg><span>더보기</span>
-  </button>
-</nav>
+
 
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true">
@@ -651,7 +655,7 @@ service cloud.firestore {
 "use strict";
 /* ══════════════════════════════════════════════
    영어 공부 v7
-   1단계 입력 → 2단계 보면서 외움/못외움 표시 → 3단계 못 외운 것 복습
+   1단계 입력 → 2단계 보면서 외움/못외움 고르기 → 3단계 못 외운 것 복습
    ══════════════════════════════════════════════ */
 const APP='영어 공부', VERSION=7;
 const IDB_NAME='englishStudio', IDB_STORE='kv', DB_KEY='db';
@@ -759,17 +763,17 @@ function stateTag(it){
   const s=it.srs.state;
   if(s==='known')return '<span class="tag ok">외움</span>';
   if(s==='unknown')return '<span class="tag bad">못 외움</span>';
-  return '<span class="tag due">아직 표시 안 함</span>';
+  return '<span class="tag due">공부 안 함</span>';
 }
 function dueText(it){
   const s=it.srs;
-  if(s.state==='unknown')return '복습 대기';
-  if(s.state==='new')return '표시하면 복습 일정이 잡힙니다';
-  if(!s.nextReview)return '';
+  if(s.state==='unknown')return '못 외움 · 복습 대기';
+  if(s.state==='new')return '아직 공부 안 함';
+  if(!s.nextReview)return '외움';
   const d=daysBetween(today(),s.nextReview);
-  if(d<=0)return '오늘 다시 볼 차례';
-  if(d===1)return '내일 다시 봅니다';
-  return `${d}일 뒤에 다시 봅니다`;
+  if(d<=0)return '외움 · 오늘 다시 볼 차례';
+  if(d===1)return '외움 · 내일 다시 봅니다';
+  return `외움 · ${d}일 뒤에 다시 봅니다`;
 }
 function typeName(it){
   if(it.type==='word')return it.subtype==='core'?'핵심 단어':'단어';
@@ -808,7 +812,9 @@ function stripIcons(s){
   return String(s==null?'':s).replace(/[\uFE0F\u200D]/g,'')
     .replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/gu,'');
 }
-function clean(s){return stripIcons(stripMarkdown(s)).replace(/\s+/g,' ').trim()}
+function killInvisible(s){return String(s==null?'':s).replace(/[\u200B-\u200D\uFEFF\u00AD]/g,'').replace(/[\u00A0\u2007\u202F\u3000]/g,' ')}
+function stripBullet(s){return String(s==null?'':s).replace(/^\s*(?:\d{1,2}\s*[.)\]]|[\u2460-\u2473]|[-*+\u2022\u00B7])\s+/,'')}
+function clean(s){return stripIcons(stripMarkdown(killInvisible(s))).replace(/\s+/g,' ').trim()}
 function cleanEn(s){
   return clean(String(s==null?'':s).replace(/^\s*(?:❌|✗|✕|×|X)\s+/i,'').replace(/^\s*(?:✅|✓|✔|→|->|⇒)\s*/,''));
 }
@@ -845,7 +851,7 @@ function headingFor(line){
 }
 function isTableSep(line){const x=String(line).trim();if(!x.includes('-'))return false;return x.replace(/[|:\-\s]/g,'')===''}
 function parseWordRow(line){
-  const raw=String(line).trim();
+  const raw=stripBullet(killInvisible(String(line))).trim();
   if(isTableSep(raw))return null;
   let cols;
   if(raw.includes('|'))cols=raw.replace(/^\s*\|/,'').replace(/\|\s*$/,'').split('|').map(clean);
@@ -857,39 +863,62 @@ function parseWordRow(line){
   const ex=cleanEn(cols.slice(2).join(' '));
   return {term,meaning,example:isEnSentence(ex)?ex:''};
 }
-/* 표가 한 줄로 뭉쳐 들어온 경우를 단어/뜻/예문으로 분해합니다.
-   예) "Word 뜻 Example sentence deadline 마감일 We need to meet the deadline. delay 지연 ..." */
-function splitWordBlob(line){
-  let s=clean(line);
+/* 단어표를 어떤 형태로 붙여넣어도 단어 / 뜻 / 예문으로 나눕니다.
+   - 한 줄에 표 전체가 뭉친 경우
+   - 한 줄에 한 단어씩, 공백 한 칸으로만 구분된 경우
+   - 번호, 불릿, 파이프, 탭, 보이지 않는 공백이 섞인 경우
+   minRows=1 이면 한 줄에 한 단어인 형태도 인정합니다. */
+function splitWordBlob(line,minRows){
+  minRows=minRows||2;
+  let s=clean(stripBullet(killInvisible(line)));
   if(!s)return null;
-  s=s.replace(/^\s*(?:핵심\s*단어|주요\s*단어|오늘의\s*단어|어휘)\s*\d*\s*개?\s*/i,'');
-  s=s.replace(/^\s*(?:Word|Words|단어|표현)\s*[|\/]?\s*(?:뜻|의미|Meaning)\s*[|\/]?\s*(?:Example\s*sentences?|Examples?|예문)\s*/i,'');
+  s=s.replace(/\s*\|\s*/g,' ').trim();
+  s=s.replace(/^(?:핵심\s*단어|주요\s*단어|오늘의\s*단어|필수\s*단어|어휘|단어\s*목록)\s*\d*\s*개?\s*[:：]?\s*/i,'');
+  s=s.replace(/^(?:Word|Words|Term|단어|표현)\s*[\/,]?\s*(?:뜻|의미|Meaning|Definition)\s*[\/,]?\s*(?:Example\s*sentences?|Examples?|Sentence|예문|예시\s*문장)\s*/i,'');
   if(!hasHangul(s)||!/[A-Za-z]/.test(s))return null;
   const toks=s.split(/\s+/).filter(Boolean);
-  if(toks.length<6)return null;
+  if(toks.length<2)return null;
   const isKo=t=>/[가-힣]/.test(t);
   const isEn=t=>/[A-Za-z]/.test(t)&&!isKo(t);
   const rows=[];
-  let i=0;
-  while(i<toks.length){
+  let i=0, guard=0;
+  while(i<toks.length&&guard++<500){
+    /* 단어 : 한글이 나오기 전까지의 영어 토큰 (최대 4개) */
     const term=[];
-    while(i<toks.length&&!isKo(toks[i])&&term.length<=4){term.push(toks[i]);i++}
-    if(!term.length||i>=toks.length)break;
-    const termStr=clean(term.join(' '));
+    while(i<toks.length&&!isKo(toks[i])&&term.length<4){term.push(toks[i]);i++}
+    if(!term.length)break;
+    if(i>=toks.length){ if(!rows.length)return null; break; }
+    if(!isKo(toks[i]))break;                       /* 단어가 5개 이상 → 표가 아님 */
+    const termStr=clean(term.join(' ')).replace(/[,;:]+$/,'');
     if(!looksLikeTerm(termStr))break;
+    /* 뜻 : 영어 토큰이 다시 나오기 전까지 */
     const mean=[];
     while(i<toks.length&&!isEn(toks[i])){mean.push(toks[i]);i++}
     const meanStr=clean(mean.join(' ')).replace(/^[\/,·\-\s]+|[\/,·\-\s]+$/g,'');
     if(!meanStr||!hasHangul(meanStr))break;
+    /* 예문 : 문장 끝 부호가 나올 때까지 */
     const ex=[];
     while(i<toks.length){
       ex.push(toks[i]);i++;
-      if(/[.!?]$/.test(ex[ex.length-1]))break;
+      if(/[.!?]["'\u201D\u2019]?$/.test(ex[ex.length-1]))break;
     }
     const exStr=cleanEn(ex.join(' '));
     rows.push({term:termStr,meaning:meanStr,example:isEnSentence(exStr)?exStr:''});
+    if(ex.length&&!isEnSentence(exStr))break;      /* 예문 자리가 이상하면 중단 */
   }
-  return rows.length>=2?rows:null;
+  if(rows.length<minRows)return null;
+  /* 한 줄 = 한 단어인 경우에는 더 엄격하게 확인 */
+  if(rows.length===1){
+    const r=rows[0];
+    if(i<toks.length)return null;                 /* 남은 찌꺼기가 있으면 표가 아님 */
+    if(!r.example){
+      /* 예문 없이 "단어 뜻" 만 있는 줄은, 한국어 설명 문장과 헷갈리지 않게 엄격히 봅니다 */
+      if(/[.!?]$/.test(r.meaning))return null;
+      if(/(습니다|합니다|입니다|했다|한다|였다|이다|봅니다|주세요)$/.test(r.meaning))return null;
+      if(r.meaning.split(/\s+/).length>6)return null;
+    }
+  }
+  return rows;
 }
 function parseArrowSeq(line){
   const x=clean(line);
@@ -914,7 +943,7 @@ function subtypeFor(chapterTitle){
 function parseContent(text){
   const lines=String(text||'').replace(/\r/g,'').split('\n').map(l=>l.trim());
   const chapters=[];
-  let cur=null, pendingWrong='', lastSent=null;
+  let cur=null, pendingWrong='', lastSent=null, awaitingExample=null;
   const ensure=()=>{if(!cur){cur={title:'학습 노트',kind:'notes',blocks:[]};chapters.push(cur)}return cur};
   const startChapter=(title,kind)=>{cur={title,kind,blocks:[]};chapters.push(cur);pendingWrong='';lastSent=null};
   const addNote=t=>{const x=clean(t);if(x)ensure().blocks.push({t:'note',text:x})};
@@ -940,21 +969,35 @@ function parseContent(text){
     if(plain.length<60&&((/\bword\b/i.test(plain)&&/(뜻|meaning)/i.test(plain)&&/(example|예문)/i.test(plain))
       ||(/^단어\b/.test(plain)&&/(뜻|예문)/.test(plain))))continue;
 
+    const useRows=rows=>{
+      if(!cur||cur.title!=='핵심 단어')startChapter('핵심 단어','words');
+      let last=null;
+      for(const r of rows){
+        const d=addWord(r.term,r.meaning,r.example);
+        if(r.example)addSent(r.example,'vocab-example',{linkWord:r.term});
+        last=r.example?null:d;
+      }
+      awaitingExample=last;pendingWrong='';
+    };
+    const blob=splitWordBlob(line,2);
+    if(blob){useRows(blob);continue}
     const row=parseWordRow(line);
     if(row){
+      awaitingExample=null;
       addWord(row.term,row.meaning,row.example);
       if(row.example)addSent(row.example,'vocab-example',{linkWord:row.term});
       pendingWrong='';continue;
     }
-    const blob=splitWordBlob(line);
-    if(blob){
-      if(!cur||cur.title!=='핵심 단어')startChapter('핵심 단어','words');
-      for(const r of blob){
-        addWord(r.term,r.meaning,r.example);
-        if(r.example)addSent(r.example,'vocab-example',{linkWord:r.term});
-      }
-      pendingWrong='';continue;
+    const single=splitWordBlob(line,1);
+    if(single){useRows(single);continue}
+    /* 단어와 뜻만 있던 앞 줄에, 이 줄의 영어 문장을 예문으로 붙입니다 */
+    if(awaitingExample&&isEnSentence(line)&&!hasHangul(line)){
+      const exs=cleanEn(line);
+      awaitingExample.example=exs;
+      addSent(exs,'vocab-example',{linkWord:awaitingExample.front});
+      awaitingExample=null;pendingWrong='';continue;
     }
+    awaitingExample=null;
     const seq=parseArrowSeq(line);
     if(seq.length>=2&&!hasHangul(plain)){
       for(const t of seq)addWord(t,'','');
@@ -1335,7 +1378,7 @@ function splitChunks(str){
 async function initAuth(){
   $('#curHost').textContent=location.origin;
   if(location.protocol==='file:'){
-    setSync('이 파일을 컴퓨터에서 그대로 열었습니다(file://).\n구글 로그인은 인터넷 주소(https://)에서만 됩니다. 아래 「연결 진단하기」를 눌러 해결 방법을 확인해 주세요.\n\n로그인이 없어도 학습 내용과 외움 표시는 이 기기에 정상 저장됩니다.','bad');
+    setSync('이 파일을 컴퓨터에서 그대로 열었습니다(file://).\n구글 로그인은 인터넷 주소(https://)에서만 됩니다. 아래 「연결 진단하기」를 눌러 해결 방법을 확인해 주세요.\n\n로그인이 없어도 학습 내용과 공부 기록은 이 기기에 정상 저장됩니다.','bad');
     $('#btnLogin').disabled=true;
     return;
   }
@@ -1355,7 +1398,7 @@ async function initAuth(){
   FB.onAuthStateChanged(FB.auth,async user=>{
     currentUser=user||null;syncReady=false;cloudBusy=false;updateAuthUI();
     if(!user){
-      setSync('아직 로그인하지 않았습니다.\n학습 내용과 외움 표시는 이 기기에 자동으로 저장되고 있습니다. 다른 기기에서도 쓰려면 위의 Google 로그인을 눌러 주세요.');
+      setSync('아직 로그인하지 않았습니다.\n학습 내용과 공부 기록은 이 기기에 자동으로 저장되고 있습니다. 다른 기기에서도 쓰려면 위의 Google 로그인을 눌러 주세요.');
       $('#snapList').innerHTML='<div class="sm muted">로그인하면 표시됩니다.</div>';return}
     setSync('클라우드 상태를 확인하는 중입니다...','');
     await reconcileOnLogin();
@@ -1781,7 +1824,8 @@ function itemBoxHTML(it,opt){
     ${example?`<div class="ex en">${esc(example)}</div>`:''}
     ${!isW&&it.contrast?`<div class="notebox warn"><b>고치기 전 표현</b><span class="en">${esc(it.contrast)}</span></div>`:''}
     ${!isW&&it.note?`<div class="notebox"><b>메모</b>${esc(it.note)}</div>`:''}
-    <div class="sub">${esc(dueText(it))}</div>
+    <div class="meta"><span class="tag ${st==='known'?'ok':st==='unknown'?'bad':'due'}">${st==='known'?'외움':st==='unknown'?'못 외움':'공부 안 함'}</span>
+      <span class="tag">${esc(dueText(it))}</span></div>
     <div class="markrow">
       <button class="iconsq" data-speak="${it.id}" aria-label="영어 듣기">${ICON_SPK}</button>
       <button class="mark known${st==='known'?' on':''}" data-mark="${it.id}" data-st="known">${ICON_OK} 외움</button>
@@ -1833,7 +1877,7 @@ function renderHome(){
   const marked=total-c.todo.length;
   $('#s1n').innerHTML=`${liveSessions().length}<small>일치 저장됨</small>`;
   $('#s1go').textContent=liveSessions().length?'새 학습 내용 넣기':'첫 학습 내용 넣기';
-  $('#s2n').innerHTML=`${c.todo.length}<small>개 표시 안 함</small>`;
+  $('#s2n').innerHTML=`${c.todo.length}<small>개 공부 안 함</small>`;
   $('#s2bar').style.width=(total?Math.round(marked/total*100):0)+'%';
   $('#s2go').textContent=c.todo.length?'이어서 공부하기':'학습 기록 다시 보기';
   const rvTotal=c.unknown.length+c.dueKnown.length;
@@ -1915,7 +1959,7 @@ function renderArchive(){
         <div style="flex:1;min-width:0">
           <div class="d">${esc(s.date)}</div>
           <div class="ti">${esc(s.title)}</div>
-          <div class="cnt">단어 ${its.filter(i=>i.type==='word').length} · 문장 ${its.filter(i=>i.type==='sentence').length}${todo?` · <b style="color:var(--warn)">표시 안 함 ${todo}</b>`:''}${un?` · <b style="color:var(--danger)">못 외움 ${un}</b>`:''}</div>
+          <div class="cnt">단어 ${its.filter(i=>i.type==='word').length} · 문장 ${its.filter(i=>i.type==='sentence').length}${todo?` · <b style="color:var(--warn)">공부 안 함 ${todo}</b>`:''}${un?` · <b style="color:var(--danger)">못 외움 ${un}</b>`:''}</div>
         </div>
         <svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
       </button><div class="daybody"></div></div>`;
@@ -1952,7 +1996,7 @@ function fillDay(card){
   const todoN=its.filter(i=>i.srs.state==='new').length;
   body.innerHTML=(html||'<div class="empty" style="padding:1.2rem 0"><div class="sm">이 조건에 맞는 내용이 없습니다.</div></div>')+
     `<div style="display:grid;gap:.5rem;margin-top:1rem">
-      ${todoN?`<button class="btn acc" data-allknown="${s.id}">남은 ${todoN}개 모두 외움으로 표시</button>`:''}
+      ${todoN?`<button class="btn acc" data-allknown="${s.id}">남은 ${todoN}개 모두 외움으로 처리</button>`:''}
       <div class="btnrow">
         <button class="btn ghost sm" data-raw="${s.id}">원문 열기</button>
         <button class="btn ghost sm" data-del="${s.id}" style="color:var(--danger)">이 날짜 삭제</button>
@@ -1961,9 +2005,9 @@ function fillDay(card){
   bindItemActions(body);
   const ak=body.querySelector('[data-allknown]');
   if(ak)ak.onclick=async()=>{
-    if(!await confirmSheet('모두 외움으로 표시할까요',`${s.date}에서 아직 표시하지 않은 ${todoN}개를 외움으로 바꿉니다.`,'모두 외움'))return;
+    if(!await confirmSheet('모두 외움으로 처리할까요',`${s.date}에서 아직 공부하지 않은 ${todoN}개를 외움으로 바꿉니다.`,'모두 외움'))return;
     for(const it of its)if(it.srs.state==='new')setItemState(it,'known');
-    markDirty();renderArchive();updateBadges();toast('표시했습니다');
+    markDirty();renderArchive();updateBadges();toast('외움으로 처리했습니다');
   };
   const rw=body.querySelector('[data-raw]');
   if(rw)rw.onclick=()=>{
@@ -1972,7 +2016,7 @@ function fillDay(card){
   };
   const dl=body.querySelector('[data-del]');
   if(dl)dl.onclick=async()=>{
-    if(!await confirmSheet('이 날짜를 삭제할까요',`${s.date} 기록이 사라집니다. 한 번이라도 표시한 항목은 단어장에 남습니다.`,'삭제',true))return;
+    if(!await confirmSheet('이 날짜를 삭제할까요',`${s.date} 기록이 사라집니다. 한 번이라도 공부한 항목은 단어장에 남습니다.`,'삭제',true))return;
     s.deleted=true;s.updatedAt=now();
     for(const it of db.items){
       if((it.sessions||[]).includes(s.id)){
@@ -2003,10 +2047,10 @@ async function editItem(id){
     <input class="inp" id="edMean" value="${esc(isW?it.meaning:it.translation)}">
     <label class="f" style="margin-top:.6rem">${isW?'예문':'메모'}</label>
     <input class="inp ${isW?'en':''}" id="edExtra" value="${esc(isW?it.example:it.note)}" autocapitalize="off">
-    <div class="statusbox" style="margin-top:.7rem">${it.srs.state==='known'?'외움':it.srs.state==='unknown'?'못 외움':'아직 표시 안 함'} · ${it.srs.reviewCount}번 확인 · ${esc(dueText(it))}</div>`;
+    <div class="statusbox" style="margin-top:.7rem">${it.srs.state==='known'?'외움':it.srs.state==='unknown'?'못 외움':'공부 안 함'} · ${it.srs.reviewCount}번 확인 · ${esc(dueText(it))}</div>`;
   const r=await openSheet({title:'항목 수정',body,actions:[
     {label:'저장',style:'acc',value:'save'},
-    {label:'표시 지우기',style:'ghost',value:'reset'},
+    {label:'공부 기록 지우기',style:'ghost',value:'reset'},
     {label:'이 항목 삭제',style:'dngr',value:'delete'}]});
   if(r==='save'){
     const f=isW?clean($('#edFront').value):cleanEn($('#edFront').value);
@@ -2020,7 +2064,7 @@ async function editItem(id){
     if(isW){it.meaning=m;it.example=cleanEn(x)}else{it.translation=m;it.note=clean(x)}
     it.updatedAt=now();markDirty();rerenderCurrent();toast('저장했습니다');
   }else if(r==='reset'){
-    it.srs=newSRS();it.updatedAt=now();markDirty();rerenderCurrent();toast('표시를 지웠습니다');
+    it.srs=newSRS();it.updatedAt=now();markDirty();rerenderCurrent();toast('공부 기록을 지웠습니다');
   }else if(r==='delete'){
     if(await confirmSheet('이 항목을 삭제할까요','되돌릴 수 없습니다.','삭제',true)){
       it.deleted=true;it.updatedAt=now();reindex();markDirty();rerenderCurrent();toast('삭제했습니다');
@@ -2049,7 +2093,7 @@ const SCOPES=[
    pick:c=>c.unknown},
   {id:'due',mark:'날',title:'오늘 다시 볼 것',desc:'외웠던 항목 중 복습일이 된 것',
    pick:c=>c.dueKnown},
-  {id:'todo',mark:'새',title:'아직 표시 안 한 것',desc:'2단계를 건너뛰고 바로 확인',
+  {id:'todo',mark:'새',title:'아직 공부 안 한 것',desc:'2단계를 건너뛰고 바로 확인',
    pick:c=>c.todo}
 ];
 function renderReviewSetup(){
@@ -2326,7 +2370,7 @@ function renderCloudWarn(){
   el.classList.toggle('hide',!why);
   if(why)el.innerHTML=`<div class="notice" style="background:var(--warn-soft);border-color:var(--warn);color:var(--warn)">
     <b>클라우드 자동 저장이 꺼져 있습니다</b><br>${esc(why)}.<br>
-    학습 내용과 외움 표시는 이 기기에 정상 저장되고 있습니다. 아래 「연결 진단하기」에서 해결 방법을 볼 수 있습니다.</div>`;
+    학습 내용과 공부 기록은 이 기기에 정상 저장되고 있습니다. 아래 「연결 진단하기」에서 해결 방법을 볼 수 있습니다.</div>`;
 }
 function renderSettings(){
   $('#swSpeak').checked=!!db.settings.speakAnswer;
@@ -2491,7 +2535,7 @@ async function runDiagnostics(){
     d:'1) Firestore Database가 만들어져 있는지\n2) 규칙(Rules)에 아래 내용이 적용되어 있는지 확인해 주세요.\n\nrules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /users/{userId}/{document=**} {\n      allow read, write: if request.auth != null\n                         && request.auth.uid == userId;\n    }\n  }\n}'});
   if(problems.includes('auto'))tips.push({
     t:'자동 저장을 켜 주세요',
-    d:'위쪽 「자동 저장」 스위치를 켜면 표시할 때마다 클라우드에 올라갑니다.'});
+    d:'위쪽 「자동 저장」 스위치를 켜면 공부할 때마다 클라우드에 올라갑니다.'});
   if(problems.includes('sdk'))tips.push({
     t:'인터넷 연결이나 보안 프로그램을 확인해 주세요',
     d:'Firebase 프로그램을 인터넷에서 불러오지 못했습니다. 회사 네트워크나 보안 프로그램이 막고 있을 수 있습니다. 다른 인터넷(휴대폰 데이터 등)에서 한 번 시도해 보세요.'});
