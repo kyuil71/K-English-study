@@ -170,10 +170,10 @@ html[data-theme="dark"] .step.on .num{color:#08201B}
 .itembox .ex{font-size:1rem;font-weight:600;color:var(--muted);margin-top:.55rem;padding-top:.5rem;
   border-top:1px dashed var(--line);line-height:1.5}
 .itembox .sub{font-size:.8rem;color:var(--muted);font-weight:700;margin-top:.4rem}
-.markrow{display:flex;gap:.5rem;margin-top:.7rem}
-.mark{flex:1;min-width:0;min-height:3.4rem;border:2px solid var(--line);background:var(--surface);
-  border-radius:.7rem;font-size:1.02rem;font-weight:800;color:var(--ink2);display:flex;
-  align-items:center;justify-content:center;gap:.3rem;touch-action:manipulation}
+.markrow{display:flex;gap:.4rem;margin-top:.7rem;align-items:stretch}
+.mark{flex:1 1 0;min-width:0;min-height:3.4rem;border:2px solid var(--line);background:var(--surface);
+  border-radius:.7rem;font-size:1rem;font-weight:800;color:var(--ink2);display:flex;
+  align-items:center;justify-content:center;gap:.28rem;touch-action:manipulation;padding:0 .25rem}
 .mark:active{transform:scale(.97)}
 .mark{white-space:nowrap;letter-spacing:-.01em}
 .mark svg{width:1.1rem;height:1.1rem;flex:none;stroke-width:3.2}
@@ -186,7 +186,7 @@ html[data-theme="dark"] .mark.unknown.on{color:#1E0C08}
 html[data-theme="dark"] .mark.star.on{color:#1E1707}
 .mark.star svg{width:1.15rem;height:1.15rem;stroke-width:2}
 .tag.star{background:var(--warn-soft);color:var(--warn)}
-.iconsq{flex:none;width:3.4rem;min-height:3.4rem;border:2px solid var(--line);background:var(--surface);
+.iconsq{flex:none;width:3rem;min-height:3.4rem;border:2px solid var(--line);background:var(--surface);
   border-radius:.7rem;display:grid;place-items:center;color:var(--ink2)}
 .iconsq svg{width:1.3rem;height:1.3rem}
 .iconsq:active{background:var(--line2)}
@@ -337,10 +337,19 @@ details.help pre{background:#0C1113;color:#DCE3E0;border-radius:.7rem;padding:.7
   padding:.6rem;font-family:var(--mono);font-size:.78rem;overflow-x:auto;white-space:nowrap}
 
 /* ══ 화면 대응 ══ */
+@media (max-width:430px){
+  .markrow{gap:.3rem}
+  .mark{font-size:.92rem;gap:.2rem;padding:0 .15rem}
+  .mark svg{width:.95rem;height:.95rem}
+  .iconsq{width:2.7rem}
+  .iconsq svg{width:1.15rem;height:1.15rem}
+}
 @media (max-width:359px){
   :root{--pad:.6rem;--gap:.55rem}
   nav.tabbar button{font-size:.68rem}
-  .markrow{flex-wrap:wrap}
+  .mark{font-size:.85rem}
+  .mark svg{display:none}
+  .iconsq{width:2.5rem}
 }
 @media (max-height:700px){
   :root{--headh:2.9rem;--navh:3.4rem}
@@ -1846,11 +1855,9 @@ function itemBoxHTML(it,opt){
       ${dueText(it)?`<span class="tag">${esc(dueText(it))}</span>`:''}
     </div>
     <div class="markrow">
+      <button class="iconsq" data-speak="${it.id}" aria-label="영어 듣기">${ICON_SPK}</button>
       <button class="mark known${st==='known'?' on':''}" data-mark="${it.id}" data-st="known">${ICON_OK} 외움</button>
       <button class="mark unknown${st==='unknown'?' on':''}" data-mark="${it.id}" data-st="unknown">${ICON_NO} 못 외움</button>
-    </div>
-    <div class="markrow" style="margin-top:.4rem">
-      <button class="iconsq" data-speak="${it.id}" aria-label="영어 듣기">${ICON_SPK}</button>
       <button class="mark star${it.star?' on':''}" data-star="${it.id}" aria-pressed="${it.star?'true':'false'}">${it.star?ICON_STAR_ON:ICON_STAR} 중요</button>
     </div>
   </div>`;
